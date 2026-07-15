@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design Alternatives — Recruiter-Scannable Profile README</title>
+<style>
+:root {
+  --bg:#f6f7f9; --surface:#fff; --border:#e2e5ea; --text:#1a1d23; --dim:#6b7280;
+  --accent:#4f46e5; --accent-soft:#eef2ff; --ok:#16a34a; --ok-soft:#ecfdf3;
+  --warn:#d97706; --warn-soft:#fffbeb; --crit:#dc2626; --crit-soft:#fef2f2;
+  --info:#2563eb; --info-soft:#eff6ff; --radius:10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg:#111418; --surface:#1a1f26; --border:#2e3640; --text:#e6e9ee; --dim:#9aa4b2;
+    --accent:#818cf8; --accent-soft:#26294a; --ok:#4ade80; --ok-soft:#11291a;
+    --warn:#fbbf24; --warn-soft:#2e2410; --crit:#f87171; --crit-soft:#321616;
+    --info:#60a5fa; --info-soft:#15233a; }
+}
+:root[data-theme="dark"] { --bg:#111418; --surface:#1a1f26; --border:#2e3640; --text:#e6e9ee; --dim:#9aa4b2;
+  --accent:#818cf8; --accent-soft:#26294a; --ok:#4ade80; --ok-soft:#11291a;
+  --warn:#fbbf24; --warn-soft:#2e2410; --crit:#f87171; --crit-soft:#321616;
+  --info:#60a5fa; --info-soft:#15233a; }
+:root[data-theme="light"] { --bg:#f6f7f9; --surface:#fff; --border:#e2e5ea; --text:#1a1d23; --dim:#6b7280;
+  --accent:#4f46e5; --accent-soft:#eef2ff; --ok:#16a34a; --ok-soft:#ecfdf3;
+  --warn:#d97706; --warn-soft:#fffbeb; --crit:#dc2626; --crit-soft:#fef2f2;
+  --info:#2563eb; --info-soft:#eff6ff; }
+* { box-sizing:border-box; }
+body { margin:0 auto; max-width:1100px; padding:24px 20px 64px; background:var(--bg);
+  color:var(--text); font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
+a { color:var(--accent); text-decoration:none; } a:hover { text-decoration:underline; }
+h1 { font-size:22px; letter-spacing:-.01em; } h2 { font-size:17px; margin-top:32px; }
+h3 { font-size:14px; margin:0 0 6px; }
+.card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+  padding:16px 18px; margin:14px 0; }
+.badge { display:inline-block; font-size:11px; font-weight:600; text-transform:uppercase;
+  letter-spacing:.04em; padding:2px 8px; border-radius:99px; background:var(--accent-soft); color:var(--accent); }
+.sev { display:inline-block; font-size:10.5px; font-weight:700; text-transform:uppercase;
+  padding:1.5px 7px; border-radius:99px; margin-right:6px; }
+.sev.critical { background:var(--crit-soft); color:var(--crit); }
+.sev.warning  { background:var(--warn-soft); color:var(--warn); }
+.sev.info     { background:var(--info-soft); color:var(--info); }
+.pass { color:var(--ok); font-weight:600; } .fail { color:var(--crit); font-weight:600; }
+table { width:100%; border-collapse:collapse; font-size:13px; }
+th, td { text-align:left; padding:7px 10px; border-bottom:1px solid var(--border); vertical-align:top; }
+th { font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--dim); }
+code { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12.5px;
+  background:var(--accent-soft); padding:1px 5px; border-radius:4px; }
+details > summary { cursor:pointer; font-weight:600; }
+.crumbs { display:flex; gap:14px; font-size:13px; margin-bottom:18px; flex-wrap:wrap; }
+.crumbs a.md { margin-left:auto; color:var(--dim); }
+.crumbs .here { font-weight:650; color:var(--text); }
+.crumbs .future { color:var(--dim); opacity:.55; }
+.tiles { display:flex; gap:10px; flex-wrap:wrap; margin:14px 0; }
+.tile { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+  padding:10px 16px; text-align:center; min-width:110px; }
+.tile b { display:block; font-size:20px; letter-spacing:-.01em; }
+.tile span { font-size:10.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--dim); }
+.area { margin-top:36px; }
+.area .kicker { font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--dim); font-weight:650; }
+.alt-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:12px; margin:12px 0; }
+.alt-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:14px 14px; }
+.alt-card.rec { border:2px solid var(--accent); background:var(--accent-soft); }
+.alt-card .lean-badge { display:inline-block; font-size:10px; font-weight:700; text-transform:uppercase;
+  letter-spacing:.04em; padding:2px 7px; border-radius:99px; background:var(--accent); color:#fff; margin-bottom:6px; }
+.alt-card ul { margin:6px 0; padding-left:18px; }
+.alt-card .label { font-size:10.5px; text-transform:uppercase; letter-spacing:.04em; color:var(--dim); font-weight:650; margin-top:8px; }
+.alt-card .ev { font-size:12px; color:var(--dim); margin-top:8px; border-top:1px dashed var(--border); padding-top:6px; }
+.lean-line { background:var(--ok-soft); border:1px solid var(--ok); border-radius:var(--radius); padding:10px 14px; margin:12px 0; font-size:13.5px; }
+.lean-line b { color:var(--ok); }
+.toc { font-size:13px; margin:10px 0 4px; }
+.toc a { margin-right:10px; }
+ol.combo li { margin-bottom:4px; }
+</style>
+</head>
+<body>
+
+<nav class="crumbs">
+  <a href="../dashboard.html">← Dashboard</a>
+  <a href="problem-statement.md" target="_blank" rel="noopener" class="md">Problem ↗</a>
+  <span class="future">Design Decisions</span>
+  <span class="future">Feature Spec</span>
+  <span class="future">Product Brief</span>
+  <span class="here">Alternatives</span>
+  <a href="alternatives.md" target="_blank" rel="noopener" class="md">md twin ↗</a>
+</nav>
+
+<header>
+  <span class="badge">Design Alternatives</span>
+  <h1>Design Alternatives: Recruiter-Scannable Profile README</h1>
+  <div style="color:var(--dim); font-size:12.5px;">Task: <code>2026-07-15-recruiter-scannable-profile</code> · Generated 2026-07-15</div>
+</header>
+
+<div class="tiles">
+  <div class="tile"><b>4</b><span>decision areas</span></div>
+  <div class="tile"><b>16</b><span>alternatives explored</span></div>
+  <div class="tile"><b>Combination</b><span>recommended approach</span></div>
+  <div class="tile"><b>Medium-High</b><span>confidence</span></div>
+</div>
+
+<section class="tldr card">
+  <h2 style="margin-top:0;">TL;DR</h2>
+  <p>Four open decision areas — contact placement, tech-stack section, "About this org", project order/density — each have 4 genuine alternatives. Recommended combination: keep the top+bottom contact bookend (add the calendar link to both), repurpose the standalone tech-stack badges as an accurate cross-project signal moved higher, replace "About this org" with one honest hook sentence, and keep <code>coupon-service</code> first while compressing both projects' "Demonstrates" lines into the same punchy-lead-plus-detail shape. None of these are locked — convergence should confirm or override each independently.</p>
+
+  <h2>Key Decisions (leans, not locked)</h2>
+  <ul>
+    <li><b>1A</b> — keep contact bookend (top badges + bottom repeat, add calendar to both) — matches the user's own stated preference.</li>
+    <li><b>2B</b> — repurpose tech-stack badges as an accurate cross-project row, moved higher — cutting would contradict the stated "badge scanning" preference; keeping as-is would misrepresent skill-flip's real stack.</li>
+    <li><b>3B</b> — replace "About this org" with one honest hook sentence — matches <code>assumptions.md</code> point 4 almost verbatim.</li>
+    <li><b>4B</b> — keep order (<code>coupon-service</code> first), compress both "Demonstrates" lines into a punchy-lead + detail shape — fixes scan speed without the framing-mismatch risk of reordering.</li>
+  </ul>
+
+  <h2>Open Questions / Risks</h2>
+  <ul>
+    <li>1A keeps some redundancy by design — if unwanted once rendered, fall back to 1D (asymmetric: full badges top, single calendar nudge bottom).</li>
+    <li>Repositioning tech-stack badges (2B) is a bigger structural change than a same-spot edit — confirm this restructuring latitude is acceptable, else fall back to 2A (cut).</li>
+    <li>Compressing <code>coupon-service</code>'s five-item list (4B) must keep the specific keywords (<code>WebFlux</code>, <code>Testcontainers</code>, <code>R2DBC</code>) in the secondary detail clause, not just a vague headline.</li>
+    <li>The four areas interact — e.g. cutting "About this org" entirely (3A) removes the only page-level home for the honesty disclosure the other leans assume exists.</li>
+  </ul>
+</section>
+
+<nav class="toc">
+  Contents:
+  <a href="#area1">1. Contact Placement</a> ·
+  <a href="#area2">2. Tech Stack Section</a> ·
+  <a href="#area3">3. About This Org</a> ·
+  <a href="#area4">4. Project Order &amp; Density</a> ·
+  <a href="#combo">Recommended Combination</a> ·
+  <a href="#deferred">Deferred Ideas</a>
+</nav>
+
+<section class="area" id="area1">
+  <div class="kicker">Decision Area 1</div>
+  <h2 style="margin-top:4px;">Contact Placement &amp; Redundancy</h2>
+  <p style="color:var(--dim); font-size:13px;">Current: top badges (LinkedIn, Email) + bottom plain-text repeat. Calendar link must be added per fixed constraints.</p>
+
+  <div class="alt-grid">
+    <div class="alt-card rec">
+      <span class="lean-badge">Lean</span>
+      <h3>1A — Keep the bookend, add calendar to both</h3>
+      <div class="label">Strengths</div>
+      <ul><li>Matches <code>assumptions.md</code> almost verbatim</li><li>Zero risk of missing a channel at either stopping point</li></ul>
+      <div class="label">Weaknesses</div>
+      <ul><li>3 channels × 2 locations is more visual weight than today's 2×2</li></ul>
+      <div class="ev">Evidence: design-context.md §3 (assumptions.md pt.5); codebase-analysis.md Concerns</div>
+    </div>
+    <div class="alt-card">
+      <h3>1B — Consolidate to top only</h3>
+      <div class="label">Strengths</div>
+      <ul><li>Removes 100% of duplication</li><li>Single source of truth</li></ul>
+      <div class="label">Weaknesses</div>
+      <ul><li>Directly contradicts the user's stated preference</li><li>Scroll-back friction after projects</li></ul>
+      <div class="ev">Evidence: codebase-analysis.md Recommendations #4</div>
+    </div>
+    <div class="alt-card">
+      <h3>1C — Consolidate to bottom only</h3>
+      <div class="label">Strengths</div>
+      <ul><li>Intro reads as pure identity/positioning</li><li>CTA lands at the "convinced" moment</li></ul>
+      <div class="label">Weaknesses</div>
+      <ul><li>Fast-exit readers who want contact immediately lose it</li><li>Biggest structural change of the four</li></ul>
+      <div class="ev">Evidence: contradicts assumptions.md pt.1 — included for genuine exploration</div>
+    </div>
+    <div class="alt-card">
+      <h3>1D — Asymmetric bookend</h3>
+      <div class="label">Strengths</div>
+      <ul><li>Cuts ⅔ of literal duplication</li><li>Bottom block gets a distinct purpose (book a call)</li></ul>
+      <div class="label">Weaknesses</div>
+      <ul><li>Recruiter wanting LinkedIn/email at bottom won't find it</li></ul>
+      <div class="ev">Evidence: reasoned compromise, no direct source</div>
+    </div>
+  </div>
+
+  <table>
+    <tr><th></th><th>1A Full bookend</th><th>1B Top only</th><th>1C Bottom only</th><th>1D Asymmetric</th></tr>
+    <tr><td>Technical feasibility</td><td>Trivial</td><td>Trivial</td><td>Trivial, reshapes intro</td><td>Trivial</td></tr>
+    <tr><td>User impact</td><td>High</td><td>Medium</td><td>Medium</td><td>High</td></tr>
+    <tr><td>Simplicity</td><td>One extra block</td><td>Simplest</td><td>Reshapes intro</td><td>More nuance</td></tr>
+    <tr><td>Risk</td><td>Low</td><td>Low tech / contradicts brief</td><td>Medium — invasive</td><td>Low</td></tr>
+    <tr><td>Scalability</td><td>Fine</td><td>Best if channels grow</td><td>Fine</td><td>Slightly awkward at scale</td></tr>
+  </table>
+
+  <details><summary>Why not the others</summary>
+    <p>1B saves scroll length but overrides a preference the user already wrote down. 1C is the most structurally invasive option for a benefit 1D achieves with far less change. 1D is a solid fallback if 1A's redundancy feels excessive once rendered.</p>
+  </details>
+</section>
+
+<section class="area" id="area2">
+  <div class="kicker">Decision Area 2</div>
+  <h2 style="margin-top:4px;">Standalone "Tech Stack" Section</h2>
+  <p style="color:var(--dim); font-size:13px;">Current: 5 Java/Spring badges, 100% overlap with coupon-service's own tags. Once skill-flip is filled in, this section will misrepresent the org as Java-only.</p>
+
+  <div class="alt-grid">
+    <div class="alt-card">
+      <h3>2A — Cut entirely</h3>
+      <div class="label">Strengths</div>
+      <ul><li>Removes 100% duplication</li><li>Nothing to fall out of sync</li></ul>
+      <div class="label">Weaknesses</div>
+      <ul><li>Loses the "scan badges before text" affordance from assumptions.md</li></ul>
+      <div class="ev">Evidence: codebase-analysis.md Recommendations #4</div>
+    </div>
+    <div class="alt-card rec">
+      <span class="lean-badge">Lean</span>
+      <h3>2B — Repurpose as accurate cross-project row, moved higher</h3>
+      <div class="label">Strengths</div>
+      <ul><li>Preserves badge-scan affordance</li><li>Adds genuinely new signal (backend + frontend range)</li></ul>
+      <div class="label">Weaknesses</div>
+      <ul><li>Two places to keep in sync</li><li>Bigger structural change (reposition)</li></ul>
+      <div class="ev">Evidence: design-context.md §4 ("wider skill spread than the page conveys")</div>
+    </div>
+    <div class="alt-card">
+      <h3>2C — Grouped "skills breadth" categories</h3>
+      <div class="label">Strengths</div>
+      <ul><li>Makes the breadth argument explicit</li></ul>
+      <div class="label">Weaknesses</div>
+      <ul><li>Disproportionate effort for ~8 badges on an <code>is_simple</code> page</li></ul>
+      <div class="ev">Evidence: none direct — flagged as likely over-engineered</div>
+    </div>
+    <div class="alt-card">
+      <h3>2D — Fold into intro as one-line rollup</h3>
+      <div class="label">Strengths</div>
+      <ul><li>Signal lands in the first 3 seconds</li></ul>
+      <div class="label">Weaknesses</div>
+      <ul><li>Crowds the seniority headline</li><li>Abandons the badge format specifically requested</li></ul>
+      <div class="ev">Evidence: partially satisfies assumptions.md pt.3, drops its format</div>
+    </div>
+  </div>
+
+  <table>
+    <tr><th></th><th>2A Cut</th><th>2B Repurpose+reposition</th><th>2C Grouped categories</th><th>2D Fold into intro</th></tr>
+    <tr><td>Technical feasibility</td><td>Trivial</td><td>Trivial</td><td>Low-medium</td><td>Trivial</td></tr>
+    <tr><td>User impact</td><td>Medium</td><td>High</td><td>Medium-high, diminishing returns</td><td>Medium</td></tr>
+    <tr><td>Simplicity</td><td>Highest</td><td>Medium</td><td>Lowest</td><td>High</td></tr>
+    <tr><td>Risk</td><td>Low</td><td>Low-medium</td><td>Medium — disproportionate</td><td>Low, dilutes headline</td></tr>
+    <tr><td>Scalability</td><td>Good</td><td>Needs sync on 3rd stack</td><td>Best if list grows a lot</td><td>Unwieldy past one clause</td></tr>
+  </table>
+
+  <details><summary>Why not the others</summary>
+    <p>2A is safe but forfeits a stated preference. 2C solves a scale problem the page doesn't have. 2D achieves a similar goal to 2B but sacrifices the requested badge format and crowds the highest-value real estate on the page.</p>
+  </details>
+</section>
+
+<section class="area" id="area3">
+  <div class="kicker">Decision Area 3</div>
+  <h2 style="margin-top:4px;">"About This Org" Section</h2>
+  <p style="color:var(--dim); font-size:13px;">Current: meta-commentary paragraph ("this page is just the index") — flagged by both source documents as the biggest scan-speed loss after the skill-flip placeholder.</p>
+
+  <div class="alt-grid">
+    <div class="alt-card">
+      <h3>3A — Cut entirely</h3>
+      <div class="label">Strengths</div>
+      <ul><li>Maximizes scan speed</li></ul>
+      <div class="label">Weaknesses</div>
+      <ul><li>No page-level home left for the honest recruitment-exercise framing</li></ul>
+      <div class="ev">Evidence: codebase-analysis.md Recommendations #2 (extreme end)</div>
+    </div>
+    <div class="alt-card rec">
+      <span class="lean-badge">Lean</span>
+      <h3>3B — One honest hook sentence</h3>
+      <div class="label">Strengths</div>
+      <ul><li>Matches assumptions.md pt.4 almost exactly</li><li>Single authoritative home, still a bridge into Projects</li></ul>
+      <div class="label">Weaknesses</div>
+      <ul><li>Costs a couple seconds of the 15s budget</li><li>Quality of the sentence matters a lot</li></ul>
+      <div class="ev">Evidence: assumptions.md pt.4; codebase-analysis.md Recommendations #2</div>
+    </div>
+    <div class="alt-card">
+      <h3>3C — Cut, push disclosure to per-project tags</h3>
+      <div class="label">Strengths</div>
+      <ul><li>Removes section-level scroll-stop</li><li>Scopes honesty exactly where needed</li></ul>
+      <div class="label">Weaknesses</div>
+      <ul><li>Caveat beside the strongest content reads like an apology</li><li>Disrupts the documented per-project shape</li></ul>
+      <div class="ev">Evidence: none direct — genuine structural alternative</div>
+    </div>
+    <div class="alt-card">
+      <h3>3D — Unheaded lead-in line</h3>
+      <div class="label">Strengths</div>
+      <ul><li>Removes a heading level, keeps the sentence</li></ul>
+      <div class="label">Weaknesses</div>
+      <ul><li>May read as an unintentional stray sentence</li></ul>
+      <div class="ev">Evidence: compromise between 3A and 3B, no direct source</div>
+    </div>
+  </div>
+
+  <table>
+    <tr><th></th><th>3A Cut</th><th>3B One sentence</th><th>3C Per-project caveat</th><th>3D Unheaded line</th></tr>
+    <tr><td>Technical feasibility</td><td>Trivial</td><td>Trivial</td><td>Trivial, touches 2 entries</td><td>Trivial</td></tr>
+    <tr><td>User impact</td><td>Fastest, but no honesty framing</td><td>High</td><td>Medium — awkward placement</td><td>High</td></tr>
+    <tr><td>Simplicity</td><td>Simplest</td><td>Simple</td><td>Repeated micro-pattern</td><td>Simple, unusual</td></tr>
+    <tr><td>Risk</td><td>Risks the honesty constraint</td><td>Low</td><td>Medium — undercuts selling points</td><td>Low-medium</td></tr>
+    <tr><td>Scalability</td><td>Fine</td><td>Fine</td><td>Repeats per future project</td><td>Fine</td></tr>
+  </table>
+
+  <details><summary>Why not the others</summary>
+    <p>3A leaves the recruitment-exercise disclosure with no home on the page itself. 3C scopes the claim well but risks reading as an apology next to the entries meant to sell. 3D is a reasonable fallback if the heading still feels like ceremony once 3B is seen rendered.</p>
+  </details>
+</section>
+
+<section class="area" id="area4">
+  <div class="kicker">Decision Area 4</div>
+  <h2 style="margin-top:4px;">Project Entry Order &amp; Density</h2>
+  <p style="color:var(--dim); font-size:13px;">Current: coupon-service first (dense, complete), skill-flip second (placeholder). Real skill-flip content now available: live demo, Vite/TS/Vitest/GitHub Actions, weighted-review algorithm, bilingual content, AI-assisted pipeline.</p>
+
+  <div class="alt-grid">
+    <div class="alt-card">
+      <h3>4A — Keep order, keep dense style</h3>
+      <div class="label">Strengths</div>
+      <ul><li>Minimal change</li><li>Both entries structurally identical</li></ul>
+      <div class="label">Weaknesses</div>
+      <ul><li>Keeps the exact verbosity flagged as a scan-speed problem</li></ul>
+      <div class="ev">Evidence: baseline against codebase-analysis.md Recommendations #3</div>
+    </div>
+    <div class="alt-card rec">
+      <span class="lean-badge">Lean</span>
+      <h3>4B — Keep order, compress both uniformly</h3>
+      <div class="label">Strengths</div>
+      <ul><li>Directly implements Recommendation #3</li><li>Preserves every CV-scan keyword as secondary detail</li></ul>
+      <div class="label">Weaknesses</div>
+      <ul><li>Requires careful compression — vague lead phrase would lose credibility</li></ul>
+      <div class="ev">Evidence: codebase-analysis.md Rec. #3; assumptions.md pt.2</div>
+    </div>
+    <div class="alt-card">
+      <h3>4C — Reorder, skill-flip first (demo-first)</h3>
+      <div class="label">Strengths</div>
+      <ul><li>Front-loads the one clickable, interactive proof point</li></ul>
+      <div class="label">Weaknesses</div>
+      <ul><li>Framing mismatch vs. the "Backend Architecture" headline just established</li></ul>
+      <div class="ev">Evidence: contradicts codebase-analysis.md Rec. #5 (lead with coupon-service)</div>
+    </div>
+    <div class="alt-card">
+      <h3>4D — Keep order, asymmetric density</h3>
+      <div class="label">Strengths</div>
+      <ul><li>Honest about relative depth of the two projects</li></ul>
+      <div class="label">Weaknesses</div>
+      <ul><li>Risk of skill-flip reading as "the lesser project" / padding</li></ul>
+      <div class="ev">Evidence: design-context.md §4 taken literally into visual asymmetry</div>
+    </div>
+  </div>
+
+  <table>
+    <tr><th></th><th>4A Keep+dense</th><th>4B Keep+compress</th><th>4C Reorder</th><th>4D Asymmetric</th></tr>
+    <tr><td>Technical feasibility</td><td>Trivial</td><td>Low-medium (editorial)</td><td>Trivial</td><td>Trivial</td></tr>
+    <tr><td>User impact</td><td>Medium — accurate but slow</td><td>High</td><td>Medium — mismatch risk</td><td>Medium — demotion risk</td></tr>
+    <tr><td>Simplicity</td><td>Simplest</td><td>Medium editorial effort</td><td>Simple reorder</td><td>Breaks shared shape</td></tr>
+    <tr><td>Risk</td><td>Low tech, unsolved goal</td><td>Low</td><td>Medium — undercuts headline</td><td>Medium — looks like padding</td></tr>
+    <tr><td>Scalability</td><td>Fine</td><td>Extends cleanly</td><td>Mismatch recurs w/ future entries</td><td>Harder to justify at scale</td></tr>
+  </table>
+
+  <details><summary>Why not the others</summary>
+    <p>4A leaves the density problem unsolved. 4C is the most interesting contrarian option but creates real tension with the seniority framing the intro was just changed to establish. 4D is honest about depth but risks making skill-flip look like a lesser afterthought rather than genuine range.</p>
+  </details>
+</section>
+
+<section class="area" id="combo">
+  <div class="kicker">Convergence Input</div>
+  <h2 style="margin-top:4px;">Recommended Combination (if all four leans accepted)</h2>
+  <div class="lean-line">
+    <ol class="combo">
+      <li>Intro — seniority headline (fixed) + full 3-channel badge row (LinkedIn, Email, Calendar) — <b>1A</b></li>
+      <li>Repositioned, accurate cross-project tech-stack badge row — <b>2B</b></li>
+      <li>One honest hook sentence replacing "About this org" — <b>3B</b></li>
+      <li><code>coupon-service</code> first, <code>skill-flip</code> second, both with punchy-lead + detail — <b>4B</b></li>
+      <li>Closing block — full 3-channel repeat — <b>1A</b></li>
+    </ol>
+  </div>
+  <p style="font-size:13px; color:var(--dim);">A starting direction for convergence, not a final decision — each area can be independently accepted, rejected, or swapped, except where noted (3A would remove the only home the other leans assume exists for the honesty disclosure).</p>
+</section>
+
+<section class="area" id="deferred">
+  <div class="kicker">Scope Guardrails</div>
+  <h2 style="margin-top:4px;">Deferred Ideas</h2>
+  <ul>
+    <li><b>Standards update</b> — refresh <code>standards/profile/markdown-authoring.md</code> and <code>structure.md</code> once the new shape is final (out of scope here, follow-up per CLAUDE.md's "Standards Evolution").</li>
+    <li><b>Visual/media additions</b> (photo, screenshots, embedded GIFs) — not requested by any source document; adds asset overhead to a zero-asset repo.</li>
+    <li><b>GitHub stats/contribution badges</b> — common pattern generally, but not requested anywhere in scope — stretch idea only.</li>
+    <li><b>Bilingual profile content</b> — explicitly ruled out by the English-only constraint; skill-flip's bilingual nature is a talking point, not a reason to bilingual-ize the page.</li>
+  </ul>
+
+  <h2>Assumptions</h2>
+  <ul>
+    <li><code>assumptions.md</code>'s stated preferences are still current, not stale notes from an earlier draft.</li>
+    <li>The two projects' relative technical depth is accurately captured in <code>design-context.md</code> §3 — if skill-flip is judged more architecturally significant, 4C becomes more attractive.</li>
+    <li>GitHub's org-profile renderer treats a repositioned/reworded page identically to today's — reasonable given the plain-GFM, no-build-step confirmation in <code>tech-stack.md</code>, worth a quick visual check post-implementation regardless.</li>
+  </ul>
+
+  <h2>Confidence: Medium-High</h2>
+  <p>All four leans are directly evidenced by either the user's own <code>assumptions.md</code> brief or the independent codebase analysis's recommendations, and the two sources converge rather than conflict. The main residual uncertainty is editorial execution quality (3B's "one sentence" and 4B's "punchy lead phrase" depend on how well they're actually written) — that risk sits with the specification/implementation phase, not this exploration.</p>
+</section>
+
+</body>
+</html>

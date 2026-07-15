@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feature Specification — Recruiter-Scannable Profile README</title>
+<style>
+:root {
+  --bg:#f6f7f9; --surface:#fff; --border:#e2e5ea; --text:#1a1d23; --dim:#6b7280;
+  --accent:#4f46e5; --accent-soft:#eef2ff; --ok:#16a34a; --ok-soft:#ecfdf3;
+  --warn:#d97706; --warn-soft:#fffbeb; --crit:#dc2626; --crit-soft:#fef2f2;
+  --info:#2563eb; --info-soft:#eff6ff; --radius:10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg:#111418; --surface:#1a1f26; --border:#2e3640; --text:#e6e9ee; --dim:#9aa4b2;
+    --accent:#818cf8; --accent-soft:#26294a; --ok:#4ade80; --ok-soft:#11291a;
+    --warn:#fbbf24; --warn-soft:#2e2410; --crit:#f87171; --crit-soft:#321616;
+    --info:#60a5fa; --info-soft:#15233a; }
+}
+:root[data-theme="dark"] { --bg:#111418; --surface:#1a1f26; --border:#2e3640; --text:#e6e9ee; --dim:#9aa4b2;
+  --accent:#818cf8; --accent-soft:#26294a; --ok:#4ade80; --ok-soft:#11291a;
+  --warn:#fbbf24; --warn-soft:#2e2410; --crit:#f87171; --crit-soft:#321616;
+  --info:#60a5fa; --info-soft:#15233a; }
+:root[data-theme="light"] { --bg:#f6f7f9; --surface:#fff; --border:#e2e5ea; --text:#1a1d23; --dim:#6b7280;
+  --accent:#4f46e5; --accent-soft:#eef2ff; --ok:#16a34a; --ok-soft:#ecfdf3;
+  --warn:#d97706; --warn-soft:#fffbeb; --crit:#dc2626; --crit-soft:#fef2f2;
+  --info:#2563eb; --info-soft:#eff6ff; }
+* { box-sizing:border-box; }
+body { margin:0 auto; max-width:1100px; padding:24px 20px 64px; background:var(--bg);
+  color:var(--text); font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
+a { color:var(--accent); text-decoration:none; } a:hover { text-decoration:underline; }
+h1 { font-size:22px; letter-spacing:-.01em; margin-bottom:4px; } h2 { font-size:16px; margin-top:28px; }
+.card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+  padding:16px 18px; margin:14px 0; }
+.badge { display:inline-block; font-size:11px; font-weight:600; text-transform:uppercase;
+  letter-spacing:.04em; padding:2px 8px; border-radius:99px; background:var(--accent-soft); color:var(--accent); }
+.sev { display:inline-block; font-size:10.5px; font-weight:700; text-transform:uppercase;
+  padding:1.5px 7px; border-radius:99px; margin-right:6px; }
+.sev.critical { background:var(--crit-soft); color:var(--crit); }
+.sev.warning  { background:var(--warn-soft); color:var(--warn); }
+.sev.info     { background:var(--info-soft); color:var(--info); }
+.pass { color:var(--ok); font-weight:600; } .fail { color:var(--crit); font-weight:600; }
+table { width:100%; border-collapse:collapse; }
+th, td { text-align:left; padding:7px 10px; border-bottom:1px solid var(--border); vertical-align:top; }
+th { font-size:11.5px; text-transform:uppercase; letter-spacing:.04em; color:var(--dim); }
+code { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12.5px;
+  background:var(--accent-soft); padding:1px 5px; border-radius:4px; }
+img.shot { max-width:100%; border:1px solid var(--border); border-radius:var(--radius); }
+details > summary { cursor:pointer; font-weight:600; }
+
+.crumbs { display:flex; gap:14px; font-size:13px; margin-bottom:18px; flex-wrap:wrap; align-items:center; }
+.crumbs a.md { margin-left:auto; color:var(--dim); }
+.crumbs .here { font-weight:650; color:var(--text); }
+
+.tiles { display:flex; gap:10px; flex-wrap:wrap; margin:14px 0; }
+.tile { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+  padding:10px 16px; text-align:center; min-width:110px; }
+.tile b { display:block; font-size:20px; letter-spacing:-.01em; }
+.tile span { font-size:10.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--dim); }
+
+.toc { font-size:12.5px; color:var(--dim); margin:10px 0 4px; }
+.toc a { color:var(--dim); }
+.toc a:hover { color:var(--accent); }
+
+.status { display:inline-block; font-size:11px; font-weight:600; text-transform:uppercase;
+  letter-spacing:.04em; padding:2px 8px; border-radius:99px; margin-left:8px; vertical-align:middle; }
+.status.approved { background:var(--ok-soft); color:var(--ok); }
+
+pre.mdblock { background:var(--bg); border:1px solid var(--border); border-radius:var(--radius);
+  padding:12px 14px; overflow-x:auto; margin:10px 0; }
+pre.mdblock code { background:none; padding:0; font-size:12px; line-height:1.55; white-space:pre; }
+
+.section-meta { font-size:12.5px; color:var(--dim); margin-top:8px; }
+.rationale { margin-top:10px; }
+.rationale b { color:var(--text); }
+
+table.trace td, table.trace th { vertical-align:top; }
+</style>
+</head>
+<body>
+
+<nav class="crumbs">
+  <a href="../dashboard.html">← Dashboard</a>
+  <a href="problem-statement.md" target="_blank" rel="noopener">Problem Statement ↗</a>
+  <a href="alternatives.html">Alternatives</a>
+  <a href="design-decisions.html">Design Decisions</a>
+  <span class="here">Feature Spec</span>
+  <a href="feature-spec.md" target="_blank" rel="noopener" class="md">md twin ↗</a>
+</nav>
+
+<header>
+  <h1>Feature Specification <span class="badge">Feature Spec</span></h1>
+  <div style="color:var(--dim); font-size:12.5px;">Recruiter-Scannable Profile README &middot; Generated 2026-07-15</div>
+</header>
+
+<div class="tiles">
+  <div class="tile"><b>4</b><span>page sections</span></div>
+  <div class="tile"><b>2</b><span>project entries</span></div>
+  <div class="tile"><b>4/4</b><span>sections approved</span></div>
+  <div class="tile"><b>5/6</b><span>success criteria met</span></div>
+  <div class="tile"><b>1</b><span>open risk</span></div>
+</div>
+
+<section class="tldr card">
+  <h2 style="margin-top:0;">TL;DR</h2>
+  <p>Full replacement content for <code>profile/README.md</code>, built section-by-section per the approved design decisions (<a href="design-decisions.html">design-decisions.html</a>): CV-aligned seniority intro with a three-channel contact bookend, a repositioned accurate cross-project tech-stack row, an honest one-sentence hook replacing &ldquo;About this org,&rdquo; and two project entries (both real content, no placeholders) using a punchy-lead + detail shape.</p>
+
+  <h2>Key Decisions</h2>
+  <p>See <a href="design-decisions.html">design-decisions.html</a> for the four area-level decisions this spec implements.</p>
+
+  <h2>Open Questions / Risks</h2>
+  <p>Tracked per-section below as each is drafted &mdash; see the <span class="status approved">Approved</span> status on each section, and the one open item flagged &#9888; in <a href="#traceability">Traceability to Success Criteria</a>.</p>
+</section>
+
+<nav class="toc">
+  Contents:
+  <a href="#section-1">Section 1: Intro &amp; Contact</a> &middot;
+  <a href="#section-2">Section 2: Tech Stack</a> &middot;
+  <a href="#section-3">Section 3: Hook + Projects</a> &middot;
+  <a href="#section-4">Section 4: Closing Contact</a> &middot;
+  <a href="#assembled">Full Assembled Page</a> &middot;
+  <a href="#traceability">Traceability</a>
+</nav>
+
+<main>
+
+  <section id="section-1" class="card">
+    <h2 style="margin-top:0;">Section 1: Intro &amp; Top Contact Block <span class="status approved">Approved</span></h2>
+    <pre class="mdblock"><code>&lt;div align="center"&gt;
+
+# Hi, I'm Bartek &#128075;
+
+Senior Software Engineer — Backend Architecture / Distributed Systems
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-connect-0A66C2?logo=linkedin&amp;logoColor=white)](https://www.linkedin.com/in/bartekmarciniak)
+[![Email](https://img.shields.io/badge/Email-contact-D14836?logo=gmail&amp;logoColor=white)](mailto:puffed.08drifter@icloud.com)
+[![Book a call](https://img.shields.io/badge/Book%20a%20call-schedule-4285F4)](https://www.cal.eu/bartek/meeting)
+
+&lt;/div&gt;</code></pre>
+    <div class="rationale"><b>Rationale:</b> Role line upgraded to CV-aligned seniority framing (Alternative selected in Phase 2). Dropped the old &ldquo;this org hosts sample projects referenced in my CV&rdquo; clause &mdash; that context now lives in the Section 3 hook sentence instead. Added a third badge for the calendar link (Decision Area 1, Alternative 1A). Kept purely descriptive, no job-search-status language.</div>
+  </section>
+
+  <section id="section-2" class="card">
+    <h2 style="margin-top:0;">Section 2: Tech-Stack Signal (repositioned) <span class="status approved">Approved</span></h2>
+    <pre class="mdblock"><code>## Tech stack
+
+![Java](https://img.shields.io/badge/Java-ED8B00?logo=openjdk&amp;logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-6DB33F?logo=springboot&amp;logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql&amp;logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&amp;logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&amp;logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&amp;logoColor=white)
+![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-2088FF?logo=githubactions&amp;logoColor=white)
+
+---</code></pre>
+    <div class="rationale"><b>Rationale:</b> Moved from its old position (near the bottom, after Projects) to right after the intro &mdash; functions as a pre-read range signal (Decision Area 2, Alternative 2B). Now genuinely cross-project: backend (Java, Spring Boot, PostgreSQL, Docker) from <code>coupon-service</code> + frontend/tooling (TypeScript, Vite, GitHub Actions) from <code>skill-flip</code>. Dropped <code>Maven</code> to avoid crowding &mdash; it's a build-tool detail that doesn't add to the breadth signal.</div>
+  </section>
+
+  <section id="section-3" class="card">
+    <h2 style="margin-top:0;">Section 3: Honest Hook + Projects <span class="status approved">Approved</span></h2>
+    <pre class="mdblock"><code>This org hosts small, self-contained projects built as recruitment-task submissions and portfolio pieces — each one chosen to demonstrate a specific engineering skill in depth.
+
+## Projects
+
+### &#127919; [coupon-service](https://github.com/aib-projekt/coupon-service)
+REST API for discount coupon lifecycle management — creation, retrieval, and atomic redemption under concurrent load, with IP-based country restriction.
+
+**Demonstrates:** **Reactive, lock-free concurrency at scale.** Built with Spring WebFlux + R2DBC; atomic redemption via `UPDATE ... WHERE ... RETURNING` (no locks); fail-closed error handling; integration-tested with Testcontainers; JaCoCo coverage gate &#8805; 80%.
+
+`Java 25` &middot; `Spring Boot / WebFlux` &middot; `PostgreSQL` &middot; `Flyway` &middot; `Docker` &middot; `Maven`
+
+### &#127183; [skill-flip](https://github.com/aib-projekt/skill-flip) &middot; [Live demo](https://aib-projekt.github.io/skill-flip/)
+A flip-card flashcard app for reviewing software-engineering terms — a weighted review algorithm concentrates practice time on what you keep missing.
+
+**Demonstrates:** **Full front-to-back delivery, no framework.** Vanilla TypeScript with direct DOM manipulation; Vitest unit tests for logic and components; CI/CD via GitHub Actions → GitHub Pages, auto-deployed on push to `main`; bilingual (EN/PL) content with a documented, human-reviewed AI-assisted authoring pipeline.
+
+`TypeScript` &middot; `Vite` &middot; `Vitest` &middot; `GitHub Actions` &middot; `GitHub Pages`
+
+---</code></pre>
+    <div class="rationale"><b>Rationale:</b> Replaces &ldquo;About this org&rdquo; with one honest hook sentence (Decision Area 3, Alternative 3B) &mdash; discloses the recruitment-exercise/portfolio framing and bridges into the projects. Both entries compressed to a bolded punchy-lead + detail shape (Decision Area 4, Alternative 4B): <code>coupon-service</code> stays first (matches the seniority/backend headline), <code>skill-flip</code> now has full real content (no placeholders) with its live demo linked in the heading.</div>
+  </section>
+
+  <section id="section-4" class="card">
+    <h2 style="margin-top:0;">Section 4: Closing Contact Block <span class="status approved">Approved</span></h2>
+    <pre class="mdblock"><code>&lt;div align="center"&gt;
+
+&#128235; Let's talk — [LinkedIn](https://www.linkedin.com/in/bartekmarciniak/) &middot; [Email](mailto:puffed.08drifter@icloud.com) &middot; [Book a call](https://www.cal.eu/bartek/meeting)
+
+&lt;/div&gt;</code></pre>
+    <div class="rationale"><b>Rationale:</b> Adds the calendar link as a third option, completing the full contact bookend (Decision Area 1, Alternative 1A). Otherwise unchanged from the current page &mdash; same centered plain-link format.</div>
+  </section>
+
+  <section id="assembled" class="card">
+    <h2 style="margin-top:0;">Full Assembled Page</h2>
+    <p style="color:var(--dim); font-size:12.5px;">All four sections combined in order, ready to replace the entire contents of <code>profile/README.md</code>.</p>
+    <details>
+      <summary>Show full assembled markdown</summary>
+      <pre class="mdblock"><code>&lt;div align="center"&gt;
+
+# Hi, I'm Bartek &#128075;
+
+Senior Software Engineer — Backend Architecture / Distributed Systems
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-connect-0A66C2?logo=linkedin&amp;logoColor=white)](https://www.linkedin.com/in/bartekmarciniak)
+[![Email](https://img.shields.io/badge/Email-contact-D14836?logo=gmail&amp;logoColor=white)](mailto:puffed.08drifter@icloud.com)
+[![Book a call](https://img.shields.io/badge/Book%20a%20call-schedule-4285F4)](https://www.cal.eu/bartek/meeting)
+
+&lt;/div&gt;
+
+---
+
+## Tech stack
+
+![Java](https://img.shields.io/badge/Java-ED8B00?logo=openjdk&amp;logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-6DB33F?logo=springboot&amp;logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql&amp;logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&amp;logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&amp;logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&amp;logoColor=white)
+![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-2088FF?logo=githubactions&amp;logoColor=white)
+
+---
+
+This org hosts small, self-contained projects built as recruitment-task submissions and portfolio pieces — each one chosen to demonstrate a specific engineering skill in depth.
+
+## Projects
+
+### &#127919; [coupon-service](https://github.com/aib-projekt/coupon-service)
+REST API for discount coupon lifecycle management — creation, retrieval, and atomic redemption under concurrent load, with IP-based country restriction.
+
+**Demonstrates:** **Reactive, lock-free concurrency at scale.** Built with Spring WebFlux + R2DBC; atomic redemption via `UPDATE ... WHERE ... RETURNING` (no locks); fail-closed error handling; integration-tested with Testcontainers; JaCoCo coverage gate &#8805; 80%.
+
+`Java 25` &middot; `Spring Boot / WebFlux` &middot; `PostgreSQL` &middot; `Flyway` &middot; `Docker` &middot; `Maven`
+
+### &#127183; [skill-flip](https://github.com/aib-projekt/skill-flip) &middot; [Live demo](https://aib-projekt.github.io/skill-flip/)
+A flip-card flashcard app for reviewing software-engineering terms — a weighted review algorithm concentrates practice time on what you keep missing.
+
+**Demonstrates:** **Full front-to-back delivery, no framework.** Vanilla TypeScript with direct DOM manipulation; Vitest unit tests for logic and components; CI/CD via GitHub Actions → GitHub Pages, auto-deployed on push to `main`; bilingual (EN/PL) content with a documented, human-reviewed AI-assisted authoring pipeline.
+
+`TypeScript` &middot; `Vite` &middot; `Vitest` &middot; `GitHub Actions` &middot; `GitHub Pages`
+
+---
+
+&lt;div align="center"&gt;
+
+&#128235; Let's talk — [LinkedIn](https://www.linkedin.com/in/bartekmarciniak/) &middot; [Email](mailto:puffed.08drifter@icloud.com) &middot; [Book a call](https://www.cal.eu/bartek/meeting)
+
+&lt;/div&gt;</code></pre>
+    </details>
+  </section>
+
+  <section id="traceability" class="card">
+    <h2 style="margin-top:0;">Traceability to Success Criteria</h2>
+    <table class="trace">
+      <thead>
+        <tr><th>Status</th><th>Success Criterion</th><th>Evidence</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="pass">&#9989; Met</span></td>
+          <td>Recruiter grasps who/what/how-to-contact within ~15 seconds</td>
+          <td>Seniority headline + repositioned tech-stack row + punchy Demonstrates leads all front-load the key signals</td>
+        </tr>
+        <tr>
+          <td><span class="pass">&#9989; Met</span></td>
+          <td>Zero placeholder text</td>
+          <td><code>skill-flip</code> fully filled with real, verified content</td>
+        </tr>
+        <tr>
+          <td><span class="pass">&#9989; Met</span></td>
+          <td>Contact = LinkedIn + email + calendar, full bookend</td>
+          <td>Present in Sections 1 and 4</td>
+        </tr>
+        <tr>
+          <td><span class="pass">&#9989; Met</span></td>
+          <td>Intro purely descriptive, no open-to-work framing</td>
+          <td>Confirmed in Section 1</td>
+        </tr>
+        <tr>
+          <td><span class="pass">&#9989; Met</span></td>
+          <td>Honest recruitment-exercise framing preserved</td>
+          <td>Section 3 hook sentence</td>
+        </tr>
+        <tr>
+          <td><span class="sev warning">&#9888; Open</span></td>
+          <td>Renders cleanly after <code>draft</code> &rarr; <code>main</code> merge</td>
+          <td>Not yet verified; recommend a quick visual check (Phase 7 mockup / post-merge GitHub preview) before finalizing</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+</main>
+
+</body>
+</html>

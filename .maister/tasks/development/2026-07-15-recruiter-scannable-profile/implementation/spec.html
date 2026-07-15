@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Specification — Recruiter-Scannable Profile README</title>
+<style>
+:root {
+  --bg:#f6f7f9; --surface:#fff; --border:#e2e5ea; --text:#1a1d23; --dim:#6b7280;
+  --accent:#4f46e5; --accent-soft:#eef2ff; --ok:#16a34a; --ok-soft:#ecfdf3;
+  --warn:#d97706; --warn-soft:#fffbeb; --crit:#dc2626; --crit-soft:#fef2f2;
+  --info:#2563eb; --info-soft:#eff6ff; --radius:10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg:#111418; --surface:#1a1f26; --border:#2e3640; --text:#e6e9ee; --dim:#9aa4b2;
+    --accent:#818cf8; --accent-soft:#26294a; --ok:#4ade80; --ok-soft:#11291a;
+    --warn:#fbbf24; --warn-soft:#2e2410; --crit:#f87171; --crit-soft:#321616;
+    --info:#60a5fa; --info-soft:#15233a; }
+}
+:root[data-theme="dark"] { --bg:#111418; --surface:#1a1f26; --border:#2e3640; --text:#e6e9ee; --dim:#9aa4b2;
+  --accent:#818cf8; --accent-soft:#26294a; --ok:#4ade80; --ok-soft:#11291a;
+  --warn:#fbbf24; --warn-soft:#2e2410; --crit:#f87171; --crit-soft:#321616;
+  --info:#60a5fa; --info-soft:#15233a; }
+:root[data-theme="light"] { --bg:#f6f7f9; --surface:#fff; --border:#e2e5ea; --text:#1a1d23; --dim:#6b7280;
+  --accent:#4f46e5; --accent-soft:#eef2ff; --ok:#16a34a; --ok-soft:#ecfdf3;
+  --warn:#d97706; --warn-soft:#fffbeb; --crit:#dc2626; --crit-soft:#fef2f2;
+  --info:#2563eb; --info-soft:#eff6ff; }
+* { box-sizing:border-box; }
+body { margin:0 auto; max-width:1100px; padding:24px 20px 64px; background:var(--bg);
+  color:var(--text); font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
+a { color:var(--accent); text-decoration:none; } a:hover { text-decoration:underline; }
+h1 { font-size:22px; letter-spacing:-.01em; } h2 { font-size:16px; margin-top:28px; }
+.card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+  padding:16px 18px; margin:14px 0; }
+.badge { display:inline-block; font-size:11px; font-weight:600; text-transform:uppercase;
+  letter-spacing:.04em; padding:2px 8px; border-radius:99px; background:var(--accent-soft); color:var(--accent); }
+.sev { display:inline-block; font-size:10.5px; font-weight:700; text-transform:uppercase;
+  padding:1.5px 7px; border-radius:99px; margin-right:6px; }
+.sev.critical { background:var(--crit-soft); color:var(--crit); }
+.sev.warning  { background:var(--warn-soft); color:var(--warn); }
+.sev.info     { background:var(--info-soft); color:var(--info); }
+.pass { color:var(--ok); font-weight:600; } .fail { color:var(--crit); font-weight:600; }
+table { width:100%; border-collapse:collapse; }
+th, td { text-align:left; padding:7px 10px; border-bottom:1px solid var(--border); vertical-align:top; }
+th { font-size:11.5px; text-transform:uppercase; letter-spacing:.04em; color:var(--dim); }
+code { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12.5px;
+  background:var(--accent-soft); padding:1px 5px; border-radius:4px; }
+img.shot { max-width:100%; border:1px solid var(--border); border-radius:var(--radius); }
+details > summary { cursor:pointer; font-weight:600; }
+pre { background:var(--accent-soft); border:1px solid var(--border); border-radius:var(--radius);
+  padding:14px 16px; overflow-x:auto; font-size:12px; line-height:1.55; }
+pre code { background:none; padding:0; }
+.crumbs { display:flex; gap:14px; font-size:13px; margin-bottom:18px; flex-wrap:wrap; }
+.crumbs a.md { margin-left:auto; color:var(--dim); }
+.crumbs .here { font-weight:650; color:var(--text); }
+.tiles { display:flex; gap:10px; flex-wrap:wrap; margin:14px 0; }
+.tile { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+  padding:10px 16px; text-align:center; min-width:110px; }
+.tile b { display:block; font-size:20px; letter-spacing:-.01em; }
+.tile span { font-size:10.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--dim); }
+.split { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+@media (max-width:640px) { .split { grid-template-columns:1fr; } }
+.split .card ul { margin:6px 0 0; padding-left:20px; }
+.story { border-left:3px solid var(--accent); padding-left:12px; margin:10px 0; }
+.risk-list li { margin-bottom:6px; }
+.toc { font-size:13px; margin:10px 0 20px; color:var(--dim); }
+.toc a { color:var(--dim); }
+.toc a:hover { color:var(--accent); }
+.reuse-yes { color:var(--ok); font-weight:600; }
+.reuse-no { color:var(--dim); }
+</style>
+</head>
+<body>
+
+<nav class="crumbs">
+  <a href="../dashboard.html">← Dashboard</a>
+  <span class="here">Spec</span>
+  <a href="implementation-plan.html">Plan</a>
+  <a href="../verification/implementation-verification.html">Verification</a>
+  <a href="spec.md" target="_blank" rel="noopener" class="md">md twin ↗</a>
+</nav>
+
+<header>
+  <span class="badge">Specification</span>
+  <h1>Recruiter-Scannable Profile README — Content Replacement</h1>
+  <div style="color:var(--dim); font-size:12.5px; margin-top:4px;">Generated 2026-07-15 · Development task · Risk: Low</div>
+</header>
+
+<div class="tiles">
+  <div class="tile"><b>4</b><span>core requirements</span></div>
+  <div class="tile"><b>1</b><span>file changed</span></div>
+  <div class="tile"><b>0</b><span>new components</span></div>
+  <div class="tile"><b>Low</b><span>risk level</span></div>
+  <div class="tile"><b>1</b><span>screen (mockup)</span></div>
+</div>
+
+<section class="tldr card">
+  <h2 style="margin-top:0;">TL;DR</h2>
+  <p>Replace the entire contents of <code>profile/README.md</code> with the approved "Full Assembled Page" block from the product-design task's <code>feature-spec.md</code> (lines 109–159), verbatim. Single-file content overwrite — no application code, no build step, one passive consumer (GitHub's org-profile renderer). The current working-tree file is a stale intermediate draft and must not be treated as a merge baseline. A repo-wide reusability search confirms nothing else shares this content or its conventions — nothing to reuse, nothing new to design; this spec pins the exact target text and the verification steps around it.</p>
+
+  <h2>Key Decisions</h2>
+  <ul>
+    <li><strong>Full overwrite, not incremental diff</strong> — the working-tree draft differs materially (headline, 2- vs 3-badge contact set, tech-stack position, unresolved <code>skill-flip</code> placeholders); patching risks leaving stale content in place.</li>
+    <li><strong>Source of truth is <code>feature-spec.md</code> lines 109–159</strong> — not the git index (stale 12-line boilerplate) and not the current working tree.</li>
+    <li><strong>Stage only <code>profile/README.md</code></strong> after the overwrite — the index holds an unrelated version; no other pending changes are swept in.</li>
+  </ul>
+
+  <h2>Open Questions / Risks</h2>
+  <ul class="risk-list">
+    <li><span class="sev warning">deferred</span><code>draft</code> / <code>origin/draft</code> have diverged specifically over this file — explicitly deferred by the user to a separate manual sync step.</li>
+    <li><span class="sev info">non-blocking</span>Calendar link (<code>cal.eu</code>) domain unverified per <code>feature-spec.md</code>'s own traceability note; checked in this task's verification step, not a blocker for the overwrite itself.</li>
+    <li><span class="sev info">deferred</span>GitHub-native rendering check requires the <code>draft</code> → <code>main</code> merge to have happened — deferred to a manual post-merge step.</li>
+  </ul>
+</section>
+
+<nav class="toc">
+  Contents:
+  <a href="#goal">Goal</a> ·
+  <a href="#stories">User Stories</a> ·
+  <a href="#requirements">Core Requirements</a> ·
+  <a href="#visual">Visual Design</a> ·
+  <a href="#reuse">Reusable Components</a> ·
+  <a href="#content">Exact Replacement Content</a> ·
+  <a href="#guidance">Implementation Guidance</a> ·
+  <a href="#scope">In / Out of Scope</a> ·
+  <a href="#success">Success Criteria</a>
+</nav>
+
+<h2 id="goal">Goal</h2>
+<div class="card">
+  <p>Replace the stale, partially-drafted <code>profile/README.md</code> with the fully-approved, recruiter-scannable redesign — transcribed verbatim from <code>feature-spec.md</code> — so the AiB org profile front-loads seniority framing, an accurate cross-project tech-stack signal, and complete (placeholder-free) project descriptions.</p>
+</div>
+
+<h2 id="stories">User Stories</h2>
+<div class="story card">
+  <strong>Recruiter</strong> — As a UK-based recruiter landing on the AiB GitHub org profile, I want to see seniority framing, tech breadth, and complete project descriptions within about 15 seconds, so I can quickly decide whether to read further or reach out.
+</div>
+<div class="story card">
+  <strong>Site owner (Bartek)</strong> — As the profile owner, I want the page free of stale draft content and placeholder text, so recruiters never see an unfinished page.
+</div>
+
+<h2 id="requirements">Core Requirements</h2>
+<div class="card">
+<table>
+<thead><tr><th>#</th><th>Requirement</th><th>Priority</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Replace the entire content of <code>profile/README.md</code> with the exact text in <a href="#content">Exact Replacement Content</a> — intro/contact block, tech-stack row, hook sentence, both project entries, closing contact block, in order.</td><td>Must</td></tr>
+<tr><td>2</td><td>Preserve exact Unicode characters (em dashes, middot <code>·</code>, emoji) and backtick-wrapped inline code exactly as authored — no re-typing or auto-formatting substitutions.</td><td>Must</td></tr>
+<tr><td>3</td><td>Touch no other file — not <code>.idea/.gitignore</code>, <code>CV.md</code>, <code>assumptions.md</code>, or the root <code>README.md</code> (unrelated pending changes, explicitly out of scope).</td><td>Must</td></tr>
+<tr><td>4</td><td>Re-stage <code>profile/README.md</code> in git after the overwrite, since the currently-staged version is an unrelated stale copy.</td><td>Must</td></tr>
+</tbody>
+</table>
+</div>
+
+<h2 id="visual">Visual Design</h2>
+<div class="card">
+  <p>Screen <code>screen:profile-readme</code> (see <code>analysis/design-context/INDEX.md</code>) is the single screen this task implements: the full rendered <code>profile/README.md</code> page.</p>
+  <table>
+    <tbody>
+      <tr><th>Mockup</th><td><code>analysis/design-context/mockups/aib-org-profile-full-page-rendered-preview.html</code></td></tr>
+      <tr><th>Fidelity</th><td>Approximate — mid-fidelity rendered preview approximating GitHub's Markdown styling, live shields.io badges, inline annotations per design decision. Not pixel-identical to GitHub's own renderer.</td></tr>
+      <tr><th>Binding status</th><td>Mockup and <code>analysis/design-context/brief.md</code> (Acceptance Criteria checklist) are <strong>binding inputs</strong> for this task.</td></tr>
+    </tbody>
+  </table>
+  <p style="margin-bottom:0; color:var(--dim);">Single content file, no componentized UI — no separate implementation-planner UI task group is expected, but any <code>Visual References</code> the planner attaches should point at this mockup path.</p>
+</div>
+
+<h2 id="reuse">Reusable Components</h2>
+<div class="split">
+  <div class="card">
+    <h3 style="margin-top:0;">Existing to Leverage</h3>
+    <table>
+      <tbody>
+        <tr><td class="reuse-no">Code / components</td><td>None — static single Markdown file, no application logic, no shared components.</td></tr>
+        <tr><td class="reuse-yes">Authoring conventions</td><td><code>standards/profile/markdown-authoring.md</code> + <code>structure.md</code> (centered divs, shields.io badges, <strong>Demonstrates</strong> callout, backtick+middot tags) — already fully embodied in the approved content.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0;">New Required</h3>
+    <p><strong>None.</strong> The "new" artifact is exact content already fully authored in <code>feature-spec.md</code>'s "Full Assembled Page" block — this task is transcription of approved, finished content, not content creation or code design.</p>
+  </div>
+</div>
+<div class="card">
+  <p style="margin:0; color:var(--dim);">Verification: repo-wide search (<code>grep -rl "shields.io"</code> / <code>grep -rl "Demonstrates"</code> across all non-<code>.maister</code> Markdown files) confirms <code>profile/README.md</code> is the only file using these patterns — no sibling content page to reuse from or reconcile with.</p>
+</div>
+
+<h2 id="content">Exact Replacement Content</h2>
+<div class="card">
+  <p>Verbatim source: <code>.maister/tasks/product-design/2026-07-15-recruiter-scannable-profile/analysis/feature-spec.md</code>, lines 109–159 ("Full Assembled Page"). Copy from that file directly during implementation to avoid a second transcription hop; this block is for review/traceability.</p>
+<pre><code>&lt;div align="center"&gt;
+
+# Hi, I'm Bartek 👋
+
+Senior Software Engineer — Backend Architecture / Distributed Systems
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-connect-0A66C2?logo=linkedin&amp;logoColor=white)](https://www.linkedin.com/in/bartekmarciniak)
+[![Email](https://img.shields.io/badge/Email-contact-D14836?logo=gmail&amp;logoColor=white)](mailto:puffed.08drifter@icloud.com)
+[![Book a call](https://img.shields.io/badge/Book%20a%20call-schedule-4285F4)](https://www.cal.eu/bartek/meeting)
+
+&lt;/div&gt;
+
+---
+
+## Tech stack
+
+![Java](https://img.shields.io/badge/Java-ED8B00?logo=openjdk&amp;logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-6DB33F?logo=springboot&amp;logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql&amp;logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&amp;logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&amp;logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&amp;logoColor=white)
+![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-2088FF?logo=githubactions&amp;logoColor=white)
+
+---
+
+This org hosts small, self-contained projects built as recruitment-task submissions and portfolio pieces — each one chosen to demonstrate a specific engineering skill in depth.
+
+## Projects
+
+### 🎟️ [coupon-service](https://github.com/aib-projekt/coupon-service)
+REST API for discount coupon lifecycle management — creation, retrieval, and atomic redemption under concurrent load, with IP-based country restriction.
+
+**Demonstrates:** **Reactive, lock-free concurrency at scale.** Built with Spring WebFlux + R2DBC; atomic redemption via `UPDATE ... WHERE ... RETURNING` (no locks); fail-closed error handling; integration-tested with Testcontainers; JaCoCo coverage gate ≥ 80%.
+
+`Java 25` · `Spring Boot / WebFlux` · `PostgreSQL` · `Flyway` · `Docker` · `Maven`
+
+### 🎴 [skill-flip](https://github.com/aib-projekt/skill-flip) · [Live demo](https://aib-projekt.github.io/skill-flip/)
+A flip-card flashcard app for reviewing software-engineering terms — a weighted review algorithm concentrates practice time on what you keep missing.
+
+**Demonstrates:** **Full front-to-back delivery, no framework.** Vanilla TypeScript with direct DOM manipulation; Vitest unit tests for logic and components; CI/CD via GitHub Actions → GitHub Pages, auto-deployed on push to `main`; bilingual (EN/PL) content with a documented, human-reviewed AI-assisted authoring pipeline.
+
+`TypeScript` · `Vite` · `Vitest` · `GitHub Actions` · `GitHub Pages`
+
+---
+
+&lt;div align="center"&gt;
+
+📫 Let's talk — [LinkedIn](https://www.linkedin.com/in/bartekmarciniak/) · [Email](mailto:puffed.08drifter@icloud.com) · [Book a call](https://www.cal.eu/bartek/meeting)
+
+&lt;/div&gt;
+</code></pre>
+  <p style="margin-bottom:0; color:var(--dim);">Note: current <code>profile/README.md</code> has no trailing newline; keep whatever the write produces consistent rather than accidental (not a functional concern given the flexible/passive-consumer compatibility requirement).</p>
+</div>
+
+<h2 id="guidance">Implementation Guidance</h2>
+
+<details class="card">
+  <summary>Technical Approach</summary>
+  <p>Single-file overwrite: take the fenced block at <code>feature-spec.md</code> lines 109–159 (excluding the <code>```markdown</code> fence delimiters) and write it as the complete new contents of <code>profile/README.md</code>, replacing all 49 existing lines. No merge or line-by-line diff logic against the current draft — the two versions differ in headline, badge count, section order, and project-entry completeness, so reconciling differences would be strictly more work and more error-prone than a clean replace. Preserve GitHub-Flavored Markdown syntax exactly as given. After writing, stage only <code>profile/README.md</code>.</p>
+</details>
+
+<details class="card">
+  <summary>Testing Approach (2–8 checks per group, manual — no automated suite applies)</summary>
+  <table>
+    <thead><tr><th>Group</th><th>Checks</th></tr></thead>
+    <tbody>
+      <tr><td><strong>1. Content fidelity</strong> (3)</td><td>Diff written file against the Exact Replacement Content block character-for-character · confirm no stale content remains (old headline, 2-badge set, <code>## About this org</code> heading, <code>skill-flip</code> placeholders) · confirm <code>git status</code> shows only <code>profile/README.md</code> staged.</td></tr>
+      <tr><td><strong>2. Link/badge reachability</strong> (4)</td><td>LinkedIn badge link resolves · Email <code>mailto:</code> link well-formed · <code>skill-flip</code> live-demo link (<code>https://aib-projekt.github.io/skill-flip/</code>) reachable · all 7 tech-stack shields.io badge images render.</td></tr>
+      <tr><td><strong>Deferred</strong> (informational only)</td><td>Calendar link (<code>cal.eu</code>) reachability — checked but flagged informational · GitHub-native rendered-page visual check — deferred to after <code>draft</code> → <code>main</code> merge.</td></tr>
+    </tbody>
+  </table>
+</details>
+
+<details class="card">
+  <summary>Standards Compliance</summary>
+  <ul>
+    <li><code>standards/profile/markdown-authoring.md</code> + <code>structure.md</code> (low-confidence, informational, not enforced) — approved content already conforms to every documented pattern. No conflicts to resolve.</li>
+    <li><code>standards/global/minimal-implementation.md</code> + <code>conventions.md</code> — build only what's needed: verbatim transcription, no extra scaffolding, no speculative sections.</li>
+  </ul>
+</details>
+
+<h2 id="scope">In / Out of Scope</h2>
+<div class="split">
+  <div class="card">
+    <h3 style="margin-top:0; color:var(--ok);">In Scope</h3>
+    <ul>
+      <li>Full-content replacement of <code>profile/README.md</code></li>
+      <li>Unicode / inline-code fidelity check</li>
+      <li>Re-staging <code>profile/README.md</code> in git</li>
+      <li>Link/badge reachability checks (LinkedIn, Email, skill-flip live demo, 7 tech-stack badges)</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0; color:var(--dim);">Out of Scope</h3>
+    <ul>
+      <li><code>.idea/.gitignore</code>, <code>CV.md</code>, <code>assumptions.md</code> changes</li>
+      <li><code>draft</code> / <code>origin/draft</code> divergence resolution</li>
+      <li>GitHub-native post-merge rendering visual check</li>
+      <li>Deep validation of the calendar (<code>cal.eu</code>) domain</li>
+      <li>Any content beyond the approved "Full Assembled Page" block</li>
+      <li><code>roadmap.md</code> / <code>architecture.md</code> creation</li>
+    </ul>
+  </div>
+</div>
+
+<h2 id="success">Success Criteria</h2>
+<div class="card">
+  <ul>
+    <li><code>profile/README.md</code> content is character-for-character identical to the Exact Replacement Content block.</li>
+    <li>Zero placeholder text remains anywhere in the file (<code>skill-flip</code> fully resolved with live-demo link).</li>
+    <li>Contact bookend present at both top and bottom: LinkedIn + Email + Book a call (3 badges/links each).</li>
+    <li><code>## Tech stack</code> positioned immediately after the intro, before <code>## Projects</code>, with all 7 badges present.</li>
+    <li><code>git status</code> shows only <code>profile/README.md</code> staged — no unrelated files swept in.</li>
+    <li>All checkable links/badges verified reachable/rendering before this task is marked complete.</li>
+    <li>Calendar link check and GitHub-native rendering check explicitly logged as deferred/informational, not silently skipped.</li>
+  </ul>
+</div>
+
+</body>
+</html>

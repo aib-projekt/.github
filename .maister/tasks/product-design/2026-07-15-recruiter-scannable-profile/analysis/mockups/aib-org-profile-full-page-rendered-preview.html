@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AiB Org Profile — Full Page (Rendered Preview) — Product Design</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: #f5f5f5;
+      color: #222;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1.5rem;
+      background: #fff;
+      border-bottom: 1px solid #ddd;
+    }
+    header h1 { margin: 0; font-size: 1.1rem; font-weight: 600; }
+    #status { font-size: 0.8rem; color: #4a4; font-weight: 500; }
+    #status.disconnected { color: #a44; }
+
+    /* Screen navigation */
+    .screen-nav {
+      background: #fafafa;
+      border-bottom: 1px solid #e0e0e0;
+      padding: 0.5rem 1.5rem;
+    }
+    .nav-screens {
+      display: flex;
+      gap: 0.25rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.25rem;
+    }
+    .nav-screen {
+      padding: 0.3rem 0.7rem;
+      border-radius: 4px;
+      text-decoration: none;
+      color: #555;
+      font-size: 0.8rem;
+      background: #eee;
+      transition: background 0.15s;
+    }
+    .nav-screen:hover { background: #ddd; }
+    .nav-screen.active { background: #333; color: #fff; }
+    .nav-prevnext {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 0.25rem;
+    }
+    .nav-arrow {
+      font-size: 0.8rem;
+      color: #0066cc;
+      text-decoration: none;
+    }
+    .nav-arrow:hover { text-decoration: underline; }
+
+    /* Gallery */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+      padding: 1rem 0;
+    }
+    .gallery-card {
+      display: block;
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      transition: box-shadow 0.2s, transform 0.15s;
+    }
+    .gallery-card:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transform: translateY(-2px);
+    }
+    .gallery-card-title {
+      padding: 0.75rem 1rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      border-bottom: 1px solid #eee;
+      background: #fafafa;
+    }
+    .gallery-card-preview {
+      padding: 1rem;
+      max-height: 200px;
+      overflow: hidden;
+      position: relative;
+      font-size: 0.7rem;
+      transform: scale(0.8);
+      transform-origin: top left;
+      pointer-events: none;
+    }
+    .gallery-card-preview::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: linear-gradient(transparent, white);
+    }
+
+    /* Mockup content */
+    main {
+      max-width: 1200px;
+      margin: 1.5rem auto;
+      padding: 1.5rem;
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+      min-height: 300px;
+      position: relative;
+    }
+    .placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 300px;
+      color: #999;
+      font-size: 1rem;
+      text-align: center;
+      line-height: 1.8;
+    }
+    .annotation-tooltip {
+      position: absolute;
+      background: rgba(0, 0, 0, 0.75);
+      color: #fff;
+      font-size: 0.75rem;
+      padding: 4px 8px;
+      border-radius: 3px;
+      pointer-events: none;
+      max-width: 250px;
+      z-index: 1000;
+      line-height: 1.3;
+    }
+    .annotation-tooltip::before {
+      content: '';
+      position: absolute;
+      top: -4px;
+      left: 10px;
+      width: 8px;
+      height: 8px;
+      background: rgba(0, 0, 0, 0.75);
+      transform: rotate(45deg);
+    }
+
+    /* Interactive screen-to-screen navigation */
+    [data-screen] { cursor: pointer; }
+    [data-screen]:hover { outline: 2px solid #0066cc; outline-offset: 2px; border-radius: 2px; }
+
+    /* Annotation toggle */
+    .annotations-hidden .annotation-tooltip { display: none; }
+    #annotation-toggle {
+      font-size: 0.8rem;
+      padding: 0.25rem 0.6rem;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      background: #f0f0f0;
+      cursor: pointer;
+      margin-left: 0.75rem;
+    }
+    #annotation-toggle:hover { background: #e0e0e0; }
+    #annotation-toggle.active { background: #333; color: #fff; border-color: #333; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AiB Org Profile — Full Page (Rendered Preview)</h1>
+    <div>
+      <button id="annotation-toggle" class="active" title="Toggle annotation tooltips">Annotations</button>
+      <span id="status">Connected</span>
+    </div>
+  </header>
+
+  
+
+  <main id="mockup-container">
+    <style>.browser-frame {
+  max-width: 900px;
+  margin: 24px auto;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,.15);
+  border: 1px solid #d0d7de;
+  background: #ffffff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+.browser-chrome {
+  background: #f6f8fa;
+  border-bottom: 1px solid #d0d7de;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.chrome-dots span {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #d0d7de;
+  margin-right: 6px;
+}
+.chrome-url {
+  font-size: 13px;
+  color: #57606a;
+  background: #fff;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  padding: 4px 12px;
+  flex: 1;
+}
+.markdown-body {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #1f2328;
+  padding: 32px 40px 24px;
+}
+.markdown-body h1 {
+  font-size: 2em;
+  font-weight: 600;
+  border-bottom: 1px solid #d8dee4;
+  padding-bottom: .3em;
+  margin: 0 0 12px;
+}
+.markdown-body h2 {
+  font-size: 1.5em;
+  font-weight: 600;
+  border-bottom: 1px solid #d8dee4;
+  padding-bottom: .3em;
+  margin: 24px 0 16px;
+}
+.markdown-body h3.project-heading {
+  font-size: 1.25em;
+  font-weight: 600;
+  margin: 24px 0 8px;
+}
+.markdown-body a { color: #0969da; text-decoration: none; }
+.markdown-body a:hover { text-decoration: underline; }
+.markdown-body hr { height: 1px; background: #d8dee4; border: 0; margin: 20px 0; }
+.markdown-body code {
+  background: rgba(175,184,193,.2);
+  padding: .2em .4em;
+  border-radius: 6px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 85%;
+}
+.markdown-body p { margin: 0 0 14px; }
+.markdown-body .center { text-align: center; }
+.markdown-body img.badge { vertical-align: middle; height: 20px; margin: 3px 3px; }
+.markdown-body .role-line { color: #57606a; font-size: 1.05em; margin-bottom: 14px; }
+.markdown-body .intro-block h1 { border-bottom: none; }
+.markdown-body .tech-stack-heading { margin-top: 8px; }
+.markdown-body .hook-sentence { color: #1f2328; font-size: .97em; }
+.markdown-body .demonstrates { background: #f6f8fa; border-left: 3px solid #6e40c9; padding: 10px 14px; border-radius: 6px; }
+.markdown-body .lead-phrase { color: #6e40c9; }
+.markdown-body .tag-row { color: #57606a; font-size: .95em; }
+.markdown-body .demo-link { font-weight: 600; }
+.markdown-body .calendar-link, .markdown-body .calendar-badge { }
+.browser-frame .scan-timer {
+  background: #fff8c5;
+  border-top: 1px solid #d4a72c;
+  color: #7d5b00;
+  font-size: 12px;
+  padding: 6px 16px;
+  text-align: center;
+}
+</style>
+<div id="mockup-content"><div class="browser-frame">
+  <div class="browser-chrome">
+    <div class="chrome-dots"><span></span><span></span><span></span></div>
+    <div class="chrome-url">github.com/aib-projekt</div>
+  </div>
+  <div class="markdown-body">
+
+    <div class="center intro-block">
+      <h1>Hi, I'm Bartek 👋</h1>
+      <p class="role-line">Senior Software Engineer — Backend Architecture / Distributed Systems</p>
+      <p class="badge-row">
+        <a href="#"><img class="badge" src="https://img.shields.io/badge/LinkedIn-connect-0A66C2?logo=linkedin&logoColor=white" alt="LinkedIn"></a>
+        <a href="#"><img class="badge" src="https://img.shields.io/badge/Email-contact-D14836?logo=gmail&logoColor=white" alt="Email"></a>
+        <a href="#" class="calendar-badge"><img class="badge" src="https://img.shields.io/badge/Book%20a%20call-schedule-4285F4" alt="Book a call"></a>
+      </p>
+    </div>
+
+    <hr>
+
+    <h2 class="tech-stack-heading">Tech stack</h2>
+    <p class="badge-row tech-row">
+      <img class="badge" src="https://img.shields.io/badge/Java-ED8B00?logo=openjdk&logoColor=white" alt="Java">
+      <img class="badge" src="https://img.shields.io/badge/Spring%20Boot-6DB33F?logo=springboot&logoColor=white" alt="Spring Boot">
+      <img class="badge" src="https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql&logoColor=white" alt="PostgreSQL">
+      <img class="badge" src="https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white" alt="Docker">
+      <img class="badge" src="https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white" alt="TypeScript">
+      <img class="badge" src="https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white" alt="Vite">
+      <img class="badge" src="https://img.shields.io/badge/GitHub%20Actions-2088FF?logo=githubactions&logoColor=white" alt="GitHub Actions">
+    </p>
+
+    <hr>
+
+    <p class="hook-sentence">This org hosts small, self-contained projects built as recruitment-task submissions and portfolio pieces — each one chosen to demonstrate a specific engineering skill in depth.</p>
+
+    <h2>Projects</h2>
+
+    <h3 class="project-heading">🎟️ <a href="#">coupon-service</a></h3>
+    <p>REST API for discount coupon lifecycle management — creation, retrieval, and atomic redemption under concurrent load, with IP-based country restriction.</p>
+    <p class="demonstrates"><strong>Demonstrates:</strong> <strong class="lead-phrase">Reactive, lock-free concurrency at scale.</strong> Built with Spring WebFlux + R2DBC; atomic redemption via <code>UPDATE ... WHERE ... RETURNING</code> (no locks); fail-closed error handling; integration-tested with Testcontainers; JaCoCo coverage gate ≥ 80%.</p>
+    <p class="tag-row"><code>Java 25</code> · <code>Spring Boot / WebFlux</code> · <code>PostgreSQL</code> · <code>Flyway</code> · <code>Docker</code> · <code>Maven</code></p>
+
+    <h3 class="project-heading">🎴 <a href="#">skill-flip</a> · <a href="#" class="demo-link">Live demo</a></h3>
+    <p>A flip-card flashcard app for reviewing software-engineering terms — a weighted review algorithm concentrates practice time on what you keep missing.</p>
+    <p class="demonstrates"><strong>Demonstrates:</strong> <strong class="lead-phrase">Full front-to-back delivery, no framework.</strong> Vanilla TypeScript with direct DOM manipulation; Vitest unit tests for logic and components; CI/CD via GitHub Actions → GitHub Pages, auto-deployed on push to <code>main</code>; bilingual (EN/PL) content with a documented, human-reviewed AI-assisted authoring pipeline.</p>
+    <p class="tag-row"><code>TypeScript</code> · <code>Vite</code> · <code>Vitest</code> · <code>GitHub Actions</code> · <code>GitHub Pages</code></p>
+
+    <hr>
+
+    <div class="center closing-block">
+      <p>📫 Let's talk — <a href="#">LinkedIn</a> · <a href="#">Email</a> · <a href="#" class="calendar-link">Book a call</a></p>
+    </div>
+
+  </div>
+  <div class="scan-timer">⏱ Target: everything above the first <span>hr</span> readable in ~5s · full page in ~15s</div>
+</div>
+</div>
+  </main>
+
+  <script>
+    // SSE client for live refresh — navigates to /latest on new screen
+    const statusEl = document.getElementById('status');
+    const evtSource = new EventSource('/events');
+    evtSource.onmessage = function(e) {
+      if (e.data === 'refresh') window.location.href = '/latest';
+    };
+    evtSource.onopen = function() {
+      statusEl.textContent = 'Connected';
+      statusEl.className = '';
+    };
+    evtSource.onerror = function() {
+      statusEl.textContent = 'Reconnecting...';
+      statusEl.className = 'disconnected';
+    };
+
+    // Annotation overlay rendering
+    const annotations = [{"selector":".calendar-badge","note":"New — added per Decision Area 1 (Alternative 1A: full contact bookend)"},{"selector":".tech-stack-heading","note":"Repositioned from the bottom of the page to right after the intro (Decision Area 2, Alternative 2B)"},{"selector":".tech-row","note":"Now genuinely cross-project: Java/Spring/Postgres/Docker (backend) + TypeScript/Vite/GitHub Actions (frontend/tooling)"},{"selector":".hook-sentence","note":"Replaces 'About this org' — one honest sentence (Decision Area 3, Alternative 3B)"},{"selector":".demonstrates","note":"Compressed to bolded lead phrase + full detail (Decision Area 4, Alternative 4B) — same shape for both projects"},{"selector":".demo-link","note":"skill-flip's real live demo link (aib-projekt.github.io/skill-flip) — recovered from the local project, not a placeholder anymore"},{"selector":".calendar-link","note":"Calendar link added to the closing block too, completing the full bookend"}];
+    function renderAnnotations() {
+      const container = document.getElementById('mockup-container');
+      annotations.forEach(function(ann) {
+        if (!ann.selector) return;
+        const target = container.querySelector(ann.selector);
+        if (!target) return;
+        const text = ann.note || ann.text || '';
+        if (!text) return;
+        const rect = target.getBoundingClientRect();
+        const containerRect = container.getBoundingClientRect();
+        const tooltip = document.createElement('div');
+        tooltip.className = 'annotation-tooltip';
+        tooltip.textContent = text;
+        tooltip.style.top = (rect.bottom - containerRect.top + 6) + 'px';
+        tooltip.style.left = (rect.left - containerRect.left) + 'px';
+        container.appendChild(tooltip);
+      });
+    }
+    if (annotations.length > 0) requestAnimationFrame(renderAnnotations);
+
+    // Annotation toggle with localStorage persistence
+    var toggleBtn = document.getElementById('annotation-toggle');
+    var container = document.getElementById('mockup-container');
+    var annotationsVisible = localStorage.getItem('annotations-visible') !== 'false'; // default: true
+    function updateToggle() {
+      if (annotationsVisible) {
+        container.classList.remove('annotations-hidden');
+        toggleBtn.classList.add('active');
+      } else {
+        container.classList.add('annotations-hidden');
+        toggleBtn.classList.remove('active');
+      }
+    }
+    updateToggle();
+    toggleBtn.addEventListener('click', function() {
+      annotationsVisible = !annotationsVisible;
+      localStorage.setItem('annotations-visible', annotationsVisible);
+      updateToggle();
+    });
+
+    // Screen-to-screen navigation: clicking elements with data-screen="slug" navigates to that screen
+    document.getElementById('mockup-container').addEventListener('click', function(e) {
+      var target = e.target.closest('[data-screen]');
+      if (target) {
+        e.preventDefault();
+        window.location.href = '/screen/' + target.getAttribute('data-screen');
+      }
+    });
+  </script>
+</body>
+</html>

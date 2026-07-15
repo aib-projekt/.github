@@ -7,10 +7,10 @@ Each project entry includes a bolded "**Demonstrates:**" line connecting the pro
 
 Confidence: 35/100 (informational).
 
-Source: `profile/README.md`, e.g. "**Demonstrates:** reactive programming (Spring WebFlux + R2DBC), safe concurrency without locks...".
+Source: `profile/README.md`, e.g. "**Demonstrates:** **Reactive, lock-free concurrency at scale.** Built with Spring WebFlux + R2DBC...". As of the 2026-07-15 recruiter-scannable redesign, the callout now opens with a short bolded lead phrase (the "punchy lead") before the supporting detail clause — see Per-Project Entry Structure below.
 
 ### Per-Project Entry Structure
-Each project section follows the same shape: H3 heading with emoji + repo link, one-line description, a bolded **Demonstrates:** line, then a closing line of tech-stack tags. Inferred from the two existing project entries (coupon-service, skill-flip), which both follow this shape identically.
+Each project section follows the same shape: H3 heading with emoji + repo link (optionally a second link, e.g. a live demo), one-line description, a bolded **Demonstrates:** line whose first sentence is a short bolded "lead phrase" followed by supporting detail, then a closing line of tech-stack tags. Inferred from the two existing project entries (coupon-service, skill-flip), which both follow this shape identically — updated 2026-07-15 when `skill-flip`'s placeholder was resolved with real content and both entries were compressed to the punchy-lead shape.
 
 Confidence: 45/100 (small sample size — only 2 entries observed).
 
@@ -19,9 +19,9 @@ Source: `profile/README.md` (coupon-service and skill-flip entries).
 Example:
 ```
 ### 🎟️ [coupon-service](https://github.com/aib-projekt/coupon-service)
-REST API for coupon lifecycle management — creation, retrieval, and **atomic redemption** under concurrent load.
+REST API for discount coupon lifecycle management — creation, retrieval, and atomic redemption under concurrent load, with IP-based country restriction.
 
-**Demonstrates:** reactive programming (Spring WebFlux + R2DBC), safe concurrency without locks.
+**Demonstrates:** **Reactive, lock-free concurrency at scale.** Built with Spring WebFlux + R2DBC; atomic redemption via `UPDATE ... WHERE ... RETURNING` (no locks).
 
 `Java 25` · `Spring Boot / WebFlux` · `PostgreSQL`
 ```
