@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design Decisions — Recruiter-Scannable Profile README</title>
+<style>
+:root {
+  --bg:#f6f7f9; --surface:#fff; --border:#e2e5ea; --text:#1a1d23; --dim:#6b7280;
+  --accent:#4f46e5; --accent-soft:#eef2ff; --ok:#16a34a; --ok-soft:#ecfdf3;
+  --warn:#d97706; --warn-soft:#fffbeb; --crit:#dc2626; --crit-soft:#fef2f2;
+  --info:#2563eb; --info-soft:#eff6ff; --radius:10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg:#111418; --surface:#1a1f26; --border:#2e3640; --text:#e6e9ee; --dim:#9aa4b2;
+    --accent:#818cf8; --accent-soft:#26294a; --ok:#4ade80; --ok-soft:#11291a;
+    --warn:#fbbf24; --warn-soft:#2e2410; --crit:#f87171; --crit-soft:#321616;
+    --info:#60a5fa; --info-soft:#15233a; }
+}
+:root[data-theme="dark"] { --bg:#111418; --surface:#1a1f26; --border:#2e3640; --text:#e6e9ee; --dim:#9aa4b2;
+  --accent:#818cf8; --accent-soft:#26294a; --ok:#4ade80; --ok-soft:#11291a;
+  --warn:#fbbf24; --warn-soft:#2e2410; --crit:#f87171; --crit-soft:#321616;
+  --info:#60a5fa; --info-soft:#15233a; }
+:root[data-theme="light"] { --bg:#f6f7f9; --surface:#fff; --border:#e2e5ea; --text:#1a1d23; --dim:#6b7280;
+  --accent:#4f46e5; --accent-soft:#eef2ff; --ok:#16a34a; --ok-soft:#ecfdf3;
+  --warn:#d97706; --warn-soft:#fffbeb; --crit:#dc2626; --crit-soft:#fef2f2;
+  --info:#2563eb; --info-soft:#eff6ff; }
+* { box-sizing:border-box; }
+body { margin:0 auto; max-width:1100px; padding:24px 20px 64px; background:var(--bg);
+  color:var(--text); font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
+a { color:var(--accent); text-decoration:none; } a:hover { text-decoration:underline; }
+h1 { font-size:22px; letter-spacing:-.01em; } h2 { font-size:16px; margin-top:28px; }
+h3 { font-size:14px; margin:0 0 6px; }
+.card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+  padding:16px 18px; margin:14px 0; }
+.badge { display:inline-block; font-size:11px; font-weight:600; text-transform:uppercase;
+  letter-spacing:.04em; padding:2px 8px; border-radius:99px; background:var(--accent-soft); color:var(--accent); }
+.sev { display:inline-block; font-size:10.5px; font-weight:700; text-transform:uppercase;
+  padding:1.5px 7px; border-radius:99px; margin-right:6px; }
+.sev.critical { background:var(--crit-soft); color:var(--crit); }
+.sev.warning  { background:var(--warn-soft); color:var(--warn); }
+.sev.info     { background:var(--info-soft); color:var(--info); }
+.pass { color:var(--ok); font-weight:600; } .fail { color:var(--crit); font-weight:600; }
+table { width:100%; border-collapse:collapse; font-size:13px; }
+th, td { text-align:left; padding:7px 10px; border-bottom:1px solid var(--border); vertical-align:top; }
+th { font-size:11.5px; text-transform:uppercase; letter-spacing:.04em; color:var(--dim); }
+code { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12.5px;
+  background:var(--accent-soft); padding:1px 5px; border-radius:4px; }
+img.shot { max-width:100%; border:1px solid var(--border); border-radius:var(--radius); }
+details > summary { cursor:pointer; font-weight:600; }
+.crumbs { display:flex; gap:14px; font-size:13px; margin-bottom:18px; flex-wrap:wrap; }
+.crumbs a.md { margin-left:auto; color:var(--dim); }
+.crumbs .here { font-weight:650; color:var(--text); }
+.tiles { display:flex; gap:10px; flex-wrap:wrap; margin:14px 0; }
+.tile { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+  padding:10px 16px; text-align:center; min-width:110px; }
+.tile b { display:block; font-size:20px; letter-spacing:-.01em; }
+.tile span { font-size:10.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--dim); }
+.shape-list { margin:8px 0 0; padding-left:20px; }
+.shape-list li { margin-bottom:8px; }
+.decision-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:12px; margin:12px 0; }
+.decision-card { background:var(--accent-soft); border:2px solid var(--accent); border-radius:var(--radius); padding:14px 16px; }
+.decision-card .area-kicker { font-size:10.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--dim); font-weight:650; }
+.decision-card .alt-id { display:inline-block; font-size:10px; font-weight:700; text-transform:uppercase;
+  letter-spacing:.04em; padding:2px 7px; border-radius:99px; background:var(--accent); color:#fff; margin:4px 0 6px; }
+.decision-card p.rationale { margin:6px 0 0; font-size:13px; }
+.decision-card .see-more { display:block; margin-top:8px; font-size:12px; }
+.rejected-group { margin-bottom:10px; }
+.rejected-group b.ids { color:var(--crit); }
+</style>
+</head>
+<body>
+
+<nav class="crumbs">
+  <a href="../dashboard.html">← Dashboard</a>
+  <a href="problem-statement.md" target="_blank" rel="noopener" class="md">Problem ↗</a>
+  <a href="alternatives.html">Alternatives</a>
+  <span class="here">Design Decisions</span>
+  <a href="design-decisions.md" target="_blank" rel="noopener" class="md">md twin ↗</a>
+</nav>
+
+<header>
+  <span class="badge">Design Decisions</span>
+  <h1>Design Decisions: Recruiter-Scannable Profile README</h1>
+  <div style="color:var(--dim); font-size:12.5px;">Task: <code>2026-07-15-recruiter-scannable-profile</code> · Generated 2026-07-15</div>
+</header>
+
+<div class="tiles">
+  <div class="tile"><b>4</b><span>decisions finalized</span></div>
+  <div class="tile"><b>3</b><span>trade-offs accepted</span></div>
+  <div class="tile"><b>11</b><span>alternatives rejected</span></div>
+  <div class="tile"><b>2</b><span>open risks</span></div>
+</div>
+
+<section class="tldr card">
+  <h2 style="margin-top:0;">TL;DR</h2>
+  <p>All four open decision areas resolved to the brainstormer's recommended combination: full top+bottom contact bookend (with calendar added), tech-stack badges repurposed as an accurate cross-project row moved higher, "About this org" replaced with one honest hook sentence, and both project entries compressed to a punchy-lead + detail shape with <code>coupon-service</code> staying first. Full alternatives and trade-offs are in <a href="alternatives.html">alternatives.html</a> (<a href="alternatives.md" target="_blank" rel="noopener">md ↗</a>).</p>
+
+  <h2>Key Decisions</h2>
+  <ul>
+    <li><b>Contact placement (Alternative 1A)</b> — keep the full top+bottom bookend, add the calendar link to both. Rationale: matches the user's own <code>assumptions.md</code> brief almost verbatim; low risk, small added cost on an already-short page.</li>
+    <li><b>Tech-stack section (Alternative 2B)</b> — repurpose as an accurate cross-project (backend + frontend) badge row, moved higher near the intro. Rationale: current Java-only badges would misrepresent the org once skill-flip's real stack is added; repositioning turns a former duplication liability into a genuine "range" signal read before the projects.</li>
+    <li><b>"About this org" (Alternative 3B)</b> — replace with one honest hook sentence disclosing the recruitment-exercise/portfolio framing. Rationale: near-direct implementation of the user's own brief; keeps the honesty disclosure in one clear, central place rather than cutting it (which would leave the constraint with no home) or scattering it per-project (which reads as an apology).</li>
+    <li><b>Project order/density (Alternative 4B)</b> — keep <code>coupon-service</code> first; compress both "Demonstrates" lines into a short bolded lead phrase + full detail underneath. Rationale: directly resolves the codebase-analysis's scan-speed concern while preserving every specific keyword (<code>WebFlux</code>, <code>Testcontainers</code>, <code>Vitest</code>, <code>GitHub Actions</code>) the user's brief wants visible to a CV-scanner; reordering to lead with skill-flip (4C) was rejected because it would undercut the seniority headline just established in the intro.</li>
+  </ul>
+
+  <h2>Open Questions / Risks</h2>
+  <ul>
+    <li>Alternative 3B's "one honest hook sentence" and 4B's "punchy lead phrase" both depend on execution quality, not just the structural choice — that risk moves to the specification phase (Phase 6), where the actual wording gets drafted and reviewed.</li>
+    <li>Repositioning the tech-stack badges (2B) is a real structural change (not just a content edit) — worth a quick visual check after implementation to confirm GitHub's renderer handles the reordered page as expected.</li>
+  </ul>
+</section>
+
+<section class="area">
+  <h2 style="margin-top:8px;">Selected Approach — Page Shape</h2>
+  <div class="card" style="border:2px solid var(--accent); background:var(--accent-soft);">
+    <p style="margin-top:0; font-size:13px; color:var(--dim);">The redesigned page follows this shape, top to bottom:</p>
+    <ol class="shape-list">
+      <li><b>Intro</b> — CV-aligned seniority headline ("Senior Software Engineer | Backend Architecture / Distributed Systems") + full three-channel badge row (LinkedIn, Email, Calendar)</li>
+      <li><b>Tech-stack badges</b> — repositioned near the top, now an accurate backend + frontend cross-project row (functions as a pre-read range signal)</li>
+      <li><b>Hook sentence</b> — replaces "About this org," one sentence disclosing the honest recruitment-exercise framing while bridging into the projects</li>
+      <li><b>Projects</b> — <code>coupon-service</code> first, <code>skill-flip</code> second (now with real recovered content: live demo, Vite/TypeScript/Vitest/GitHub Actions stack), both with a bolded punchy lead phrase followed by full keyword detail</li>
+      <li><b>Closing block</b> — full three-channel contact repeat (LinkedIn, Email, Calendar)</li>
+    </ol>
+  </div>
+</section>
+
+<section class="area">
+  <h2>Decisions by Area</h2>
+  <div class="decision-grid">
+    <div class="decision-card">
+      <div class="area-kicker">Decision Area 1</div>
+      <h3>Contact Placement &amp; Redundancy</h3>
+      <span class="alt-id">Selected: 1A</span>
+      <p class="rationale">Keep the full top+bottom bookend, add the calendar link to both. Matches the user's own <code>assumptions.md</code> brief almost verbatim; low risk, small added cost on an already-short page.</p>
+      <a class="see-more" href="alternatives.html#area1">Full alternatives ↳ alternatives.html#area1</a>
+    </div>
+    <div class="decision-card">
+      <div class="area-kicker">Decision Area 2</div>
+      <h3>Tech-Stack Section</h3>
+      <span class="alt-id">Selected: 2B</span>
+      <p class="rationale">Repurpose as an accurate cross-project (backend + frontend) badge row, moved higher near the intro. Current Java-only badges would misrepresent the org once skill-flip's real stack is added; repositioning turns a former duplication liability into a genuine "range" signal read before the projects.</p>
+      <a class="see-more" href="alternatives.html#area2">Full alternatives ↳ alternatives.html#area2</a>
+    </div>
+    <div class="decision-card">
+      <div class="area-kicker">Decision Area 3</div>
+      <h3>"About This Org"</h3>
+      <span class="alt-id">Selected: 3B</span>
+      <p class="rationale">Replace with one honest hook sentence disclosing the recruitment-exercise/portfolio framing. Near-direct implementation of the user's own brief; keeps the honesty disclosure in one clear, central place rather than cutting it or scattering it per-project.</p>
+      <a class="see-more" href="alternatives.html#area3">Full alternatives ↳ alternatives.html#area3</a>
+    </div>
+    <div class="decision-card">
+      <div class="area-kicker">Decision Area 4</div>
+      <h3>Project Order &amp; Density</h3>
+      <span class="alt-id">Selected: 4B</span>
+      <p class="rationale">Keep <code>coupon-service</code> first; compress both "Demonstrates" lines into a short bolded lead phrase + full detail underneath. Preserves every specific keyword (<code>WebFlux</code>, <code>Testcontainers</code>, <code>Vitest</code>, <code>GitHub Actions</code>) while fixing scan speed; reordering to lead with skill-flip (4C) was rejected as it would undercut the seniority headline.</p>
+      <a class="see-more" href="alternatives.html#area4">Full alternatives ↳ alternatives.html#area4</a>
+    </div>
+  </div>
+</section>
+
+<section class="area">
+  <h2>Trade-offs Accepted</h2>
+  <table>
+    <tr><th>Trade-off</th><th>Accepted in exchange for</th></tr>
+    <tr>
+      <td>Some contact-channel redundancy (three channels appearing twice)</td>
+      <td>Guaranteed CTA visibility at both natural stopping points (post-intro skim, post-projects deep read)</td>
+    </tr>
+    <tr>
+      <td>A structural repositioning of the tech-stack section (rather than a same-spot edit)</td>
+      <td>Accuracy and a genuine breadth signal</td>
+    </tr>
+    <tr>
+      <td>A small amount of scan-time cost for the hook sentence (vs. cutting "About this org" outright)</td>
+      <td>Keeping the page's only honesty disclosure intact</td>
+    </tr>
+  </table>
+</section>
+
+<section class="area">
+  <h2>Alternatives Considered (Rejected)</h2>
+  <p style="font-size:12.5px; color:var(--dim);">Full detail with trade-off matrices in <a href="alternatives.html">alternatives.html</a> (<a href="alternatives.md" target="_blank" rel="noopener">md ↗</a>). Summary of paths not taken:</p>
+  <details>
+    <summary>Show rejected alternatives by area (11)</summary>
+    <div class="rejected-group">
+      <p><b class="ids">1B/1C</b> (consolidate contact to one location) — rejected: contradicts the user's explicit stated preference for a bottom-of-page repeat.</p>
+    </div>
+    <div class="rejected-group">
+      <p><b class="ids">2A/2C/2D</b> (cut, categorize, or fold tech-stack into intro) — rejected: 2A loses the badge-scanning affordance the user asked for; 2C is disproportionate design effort for ~8 badges; 2D crowds the highest-value intro real estate.</p>
+    </div>
+    <div class="rejected-group">
+      <p><b class="ids">3A/3C/3D</b> (cut, per-project caveat, or unheaded lead-in) — rejected: 3A leaves the honesty constraint with no home on the page; 3C risks reading as an apology beside the strongest content; 3D was a fallback, not preferred once 3B was on the table.</p>
+    </div>
+    <div class="rejected-group">
+      <p><b class="ids">4A/4C/4D</b> (keep dense style, reorder to lead with demo, or asymmetric density) — rejected: 4A doesn't solve the scan-speed problem; 4C creates a framing mismatch against the seniority headline; 4D risks skill-flip reading as a demoted afterthought.</p>
+    </div>
+  </details>
+</section>
+
+</body>
+</html>

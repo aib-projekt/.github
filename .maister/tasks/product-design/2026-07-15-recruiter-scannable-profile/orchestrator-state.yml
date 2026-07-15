@@ -1,0 +1,161 @@
+orchestrator:
+  started_phase: phase-0
+  completed_phases: ["phase-0", "phase-1", "phase-2", "phase-4", "phase-5", "phase-6", "phase-7", "phase-8"]
+  failed_phases: []
+  auto_fix_attempts: {}
+  options:
+    e2e_enabled: null
+    user_docs_enabled: null
+    code_review_enabled: null
+    sequential: null
+    html_output: true
+    visual_enabled: null
+  created: "2026-07-15T12:17:50Z"
+  updated: "2026-07-15T18:49:55Z"
+  task_path: .maister/tasks/product-design/2026-07-15-recruiter-scannable-profile
+  task_ids:
+    phase-0: "18"
+    phase-1: "19"
+    phase-2: "20"
+    phase-3: "21"
+    phase-4: "22"
+    phase-5: "23"
+    phase-6: "24"
+    phase-7: "25"
+    phase-8: "26"
+
+task:
+  title: "Recruiter-scannable profile README redesign"
+  description: "Update profile/README.md as a business card for a recruiter scanning in 15 seconds"
+  status: completed
+  tags: ["profile", "content-design", "markdown"]
+  priority: null
+
+design_context:
+  design_characteristics:
+    is_greenfield: false
+    is_enhancement: true
+    is_ui_focused: true
+    is_backend: false
+    is_complex: false
+    is_simple: true
+  complexity_level: "simple"
+  collected_urls: []
+  research_topics: []
+  user_files_list:
+    - "context/CV.md"
+    - "context/assumptions.md"
+  project_doc_paths:
+    - ".maister/docs/project/vision.md"
+    - ".maister/docs/project/tech-stack.md"
+  project_context_summary: "AiB GitHub org profile repo: documentation-only, Markdown-only. Vision: portfolio showcase for Bartek Marciniak (Java/Spring Boot backend engineer) targeting recruiters/clients. Existing profile/README.md has intro, contact badges, two project entries (coupon-service complete, skill-flip has placeholder text), tech-stack badges, closing contact block."
+  next_phase: "Phase 7: Visual Prototyping"
+  refinement_iterations:
+    phase_2: 0
+    phase_3: 0
+    phase_5: 0
+    phase_6_sections: {}
+    phase_7: 0
+  visual_companion:
+    available: true
+    port: 3847
+    pid: null
+    fallback_to_ascii: false
+  research_reference:
+    path: null
+    research_question: null
+  phase_summaries:
+    context_gathering:
+      summary: "User confirmed characteristics (enhancement, UI-focused, simple) and supplied CV.md (full CV) and assumptions.md (a detailed Polish-language brief the user already wrote: README should be a '15-second recruiter business card' with who-I-am, project entries with 'demonstrates' callouts, stack badges, honest framing as recruitment-exercise projects, repeated contact at end, English-only since inbound recruiters are UK-based)."
+      decisions:
+        - {decision: "Characteristics confirmed as enhancement + is_ui_focused + is_simple", rationale: "Single existing page, content/visual scannability focus, well-defined scope"}
+      risks: []
+      artifacts:
+        - {path: "context/CV.md", label: "Full CV (user-supplied)", html: null}
+        - {path: "context/assumptions.md", label: "User's own design brief (Polish)", html: null}
+    context_synthesis:
+      summary: "Synthesized project docs, codebase-analysis.md, CV.md, and assumptions.md into design-context.md. Recovered real skill-flip content (live demo + tech stack) from local project, resolving the placeholder. Identified one real open design choice: intro framing (modest vs CV-aligned senior)."
+      decisions: []
+      risks:
+        - "CV framing ('Senior Software Engineer / Backend Architecture / Distributed Systems') is notably more senior than the README's current 'Java / Spring Boot backend engineer' — needs a decision in Phase 2."
+        - "CV lists a meetings-calendar contact link not currently on the profile page — confirm whether to include."
+      artifacts:
+        - {path: "analysis/codebase-analysis.md", label: "Codebase/content analysis", html: null}
+        - {path: "analysis/design-context.md", label: "Unified design context synthesis", html: null}
+    problem_exploration:
+      summary: "Problem statement, constraints, and success criteria approved. Seniority framing resolved (lead with CV-aligned 'Senior Software Engineer'), calendar link added (cal.eu/bartek/meeting), intro kept purely descriptive."
+      problem_statement: "profile/README.md reads as internal documentation, not a recruiter pitch; needs to communicate who/what/how-to-contact within ~15 seconds for UK-based recruiters."
+      constraints:
+        - "Plain GitHub-Flavored Markdown, no build step/framework"
+        - "English-only copy"
+        - "Only 2 real projects exist (coupon-service, skill-flip) — no fabricated content"
+        - "Honest recruitment-exercise framing for both projects"
+        - "Must render via GitHub's native org-profile auto-render"
+        - "Landing-page length, technical depth stays in each repo's own README"
+      success_criteria:
+        - "Recruiter grasps who/what/how-to-contact within ~15 seconds"
+        - "Zero placeholder text (skill-flip fully filled with real content)"
+        - "Contact = LinkedIn + email + calendar link, no unnecessary redundancy"
+        - "Intro purely descriptive, no open-to-work framing"
+        - "Renders cleanly after draft→main merge"
+      decisions:
+        - {decision: "Lead with CV-aligned seniority framing", rationale: "Matches actual CV positioning, current README undersells it"}
+        - {decision: "Add meetings-calendar link (cal.eu/bartek/meeting)", rationale: "Low-friction path straight to a booked slot"}
+        - {decision: "Keep intro purely descriptive, no job-search-status framing", rationale: "Avoids reading as less senior or dating quickly"}
+      risks:
+        - "Whether to keep duplicate top/bottom contact blocks and the standalone Tech stack section is still open — deferred to Phase 4/5"
+      artifacts:
+        - {path: "analysis/problem-statement.md", label: "Problem statement, constraints, success criteria", html: null}
+    idea_generation:
+      summary: "solution-brainstormer generated 4 alternatives each for 4 decision areas (contact placement, tech-stack section, About-org replacement, project order/density), with a recommended combination and medium-high confidence."
+      alternatives_count: 16
+      decisions: []
+      risks:
+        - "The four decision areas are not fully independent — e.g. cutting 'About this org' entirely (3A) would remove the only page-level home for the honest recruitment-exercise framing that other alternatives assume exists."
+      artifacts:
+        - {path: "analysis/alternatives.md", label: "Design alternatives (4 decision areas x 4 each)", html: "analysis/alternatives.html"}
+    idea_convergence:
+      summary: "All 4 decision areas resolved to the recommended combination: full contact bookend (1A), repositioned cross-project tech-stack badges (2B), one honest hook sentence replacing About-org (3B), coupon-service first with punchy-lead+detail entries (4B)."
+      selected_approach: "Intro (seniority headline + contact bookend) -> repositioned tech-stack badges -> hook sentence -> projects (coupon-service, skill-flip; punchy-lead+detail) -> closing contact repeat"
+      trade_offs_accepted:
+        - "Some contact-channel redundancy (3 channels x2 locations) for guaranteed CTA visibility at both natural stopping points"
+        - "Structural repositioning of tech-stack section (not a same-spot edit) for accuracy + genuine breadth signal"
+        - "Small scan-time cost for hook sentence vs cutting About-org outright, to preserve the page's only honesty disclosure"
+      key_decisions:
+        - {decision: "Contact placement: Alternative 1A (full bookend + calendar)", rationale: "Matches user's own assumptions.md brief"}
+        - {decision: "Tech-stack section: Alternative 2B (repurpose + reposition)", rationale: "Fixes accuracy problem, adds genuine breadth signal"}
+        - {decision: "About-org: Alternative 3B (one hook sentence)", rationale: "Near-direct match to user's brief, keeps honesty disclosure a home"}
+        - {decision: "Project order/density: Alternative 4B (keep order, compress both)", rationale: "Resolves scan-speed without framing mismatch or demotion risk"}
+      risks:
+        - "3B's hook sentence and 4B's lead phrases depend on execution quality — moves to Phase 6 spec drafting"
+        - "2B's repositioning is a real structural change — worth a quick visual check after implementation"
+      artifacts:
+        - {path: "analysis/design-decisions.md", label: "Selected approach, rationale, trade-offs", html: "analysis/design-decisions.html"}
+    feature_specification:
+      summary: "4 sections drafted and approved: intro/contact, tech-stack signal, hook+projects, closing contact. Full assembled page written. 5/6 success criteria met; 1 open item (render check) flagged for Phase 7."
+      spec_sections:
+        section_1_intro: "approved"
+        section_2_tech_stack: "approved"
+        section_3_hook_projects: "approved"
+        section_4_closing: "approved"
+      sections_count: 4
+      decisions: []
+      risks:
+        - "resolved: page renders cleanly — verified via Phase 7 mockup (mid-fidelity, live badges), approved on first review"
+      artifacts:
+        - {path: "analysis/feature-spec.md", label: "Full section-by-section spec + assembled page", html: "analysis/feature-spec.html"}
+    visual_prototyping:
+      summary: "Rendered a mid-fidelity mockup of the full page (mimicking GitHub's markdown rendering, live shields.io badges) with annotations for each design decision. Approved on first review — resolves the 'renders cleanly' open risk from Phase 6."
+      mockup_references:
+        - "analysis/mockups/aib-org-profile-full-page-rendered-preview.html"
+      decisions: []
+      risks: []
+      artifacts:
+        - {path: "analysis/mockups/aib-org-profile-full-page-rendered-preview.html", label: "Rendered page mockup", html: "analysis/mockups/aib-org-profile-full-page-rendered-preview.html"}
+    review_handoff:
+      summary: "Layered product brief assembled from all phase artifacts and approved on first review. Visual companion server shut down. Workflow complete — ready for handoff/implementation."
+      brief_layers: ["Layer 0: Core Brief", "Layer 2: Design Decisions", "Layer 3: Mockup Reference", "References"]
+      decisions: []
+      risks: []
+      artifacts:
+        - {path: "outputs/product-brief.md", label: "Final product brief", html: "outputs/product-brief.html"}

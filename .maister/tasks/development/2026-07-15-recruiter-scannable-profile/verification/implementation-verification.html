@@ -1,0 +1,364 @@
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Implementation Verification — Recruiter-Scannable Profile README</title>
+<style>
+:root {
+  --bg:#f6f7f9; --surface:#fff; --border:#e2e5ea; --text:#1a1d23; --dim:#6b7280;
+  --accent:#4f46e5; --accent-soft:#eef2ff; --ok:#16a34a; --ok-soft:#ecfdf3;
+  --warn:#d97706; --warn-soft:#fffbeb; --crit:#dc2626; --crit-soft:#fef2f2;
+  --info:#2563eb; --info-soft:#eff6ff; --radius:10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg:#111418; --surface:#1a1f26; --border:#2e3640; --text:#e6e9ee; --dim:#9aa4b2;
+    --accent:#818cf8; --accent-soft:#26294a; --ok:#4ade80; --ok-soft:#11291a;
+    --warn:#fbbf24; --warn-soft:#2e2410; --crit:#f87171; --crit-soft:#321616;
+    --info:#60a5fa; --info-soft:#15233a; }
+}
+:root[data-theme="dark"] {
+  --bg:#111418; --surface:#1a1f26; --border:#2e3640; --text:#e6e9ee; --dim:#9aa4b2;
+  --accent:#818cf8; --accent-soft:#26294a; --ok:#4ade80; --ok-soft:#11291a;
+  --warn:#fbbf24; --warn-soft:#2e2410; --crit:#f87171; --crit-soft:#321616;
+  --info:#60a5fa; --info-soft:#15233a;
+}
+:root[data-theme="light"] {
+  --bg:#f6f7f9; --surface:#fff; --border:#e2e5ea; --text:#1a1d23; --dim:#6b7280;
+  --accent:#4f46e5; --accent-soft:#eef2ff; --ok:#16a34a; --ok-soft:#ecfdf3;
+  --warn:#d97706; --warn-soft:#fffbeb; --crit:#dc2626; --crit-soft:#fef2f2;
+  --info:#2563eb; --info-soft:#eff6ff;
+}
+* { box-sizing:border-box; }
+body { margin:0 auto; max-width:1100px; padding:24px 20px 64px; background:var(--bg);
+  color:var(--text); font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
+a { color:var(--accent); text-decoration:none; } a:hover { text-decoration:underline; }
+h1 { font-size:22px; letter-spacing:-.01em; margin-bottom:4px; }
+h2 { font-size:16px; margin-top:28px; }
+h3 { font-size:14px; margin:0 0 8px; }
+.card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+  padding:16px 18px; margin:14px 0; }
+.badge { display:inline-block; font-size:11px; font-weight:600; text-transform:uppercase;
+  letter-spacing:.04em; padding:2px 8px; border-radius:99px; background:var(--accent-soft); color:var(--accent); }
+.sev { display:inline-block; font-size:10.5px; font-weight:700; text-transform:uppercase;
+  padding:1.5px 7px; border-radius:99px; margin-right:6px; white-space:nowrap; }
+.sev.critical { background:var(--crit-soft); color:var(--crit); }
+.sev.warning  { background:var(--warn-soft); color:var(--warn); }
+.sev.info     { background:var(--info-soft); color:var(--info); }
+.pass { color:var(--ok); font-weight:600; } .fail { color:var(--crit); font-weight:600; }
+table { width:100%; border-collapse:collapse; }
+th, td { text-align:left; padding:7px 10px; border-bottom:1px solid var(--border); vertical-align:top; }
+th { font-size:11.5px; text-transform:uppercase; letter-spacing:.04em; color:var(--dim); }
+code { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12.5px;
+  background:var(--accent-soft); padding:1px 5px; border-radius:4px; }
+img.shot { max-width:100%; border:1px solid var(--border); border-radius:var(--radius); }
+details > summary { cursor:pointer; font-weight:600; }
+
+/* companion-specific */
+.crumbs { display:flex; gap:14px; font-size:13px; margin-bottom:18px; flex-wrap:wrap; }
+.crumbs a.md { margin-left:auto; color:var(--dim); }
+.crumbs .here { font-weight:650; color:var(--text); }
+header { display:flex; flex-wrap:wrap; align-items:baseline; gap:10px 14px; }
+header .meta { font-size:12.5px; color:var(--dim); }
+.tiles { display:flex; gap:10px; flex-wrap:wrap; margin:14px 0; }
+.tile { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+  padding:10px 16px; text-align:center; min-width:96px; }
+.tile b { display:block; font-size:20px; letter-spacing:-.01em; }
+.tile span { font-size:10.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--dim); }
+.tile.crit b { color:var(--crit); } .tile.warn b { color:var(--warn); } .tile.info b { color:var(--info); }
+.tile.ok b { color:var(--ok); }
+.verdict-banner { border-radius:var(--radius); padding:16px 18px; margin:14px 0; border:1px solid var(--border); }
+.verdict-banner.pass-with-issues { background:var(--warn-soft); border-color:var(--warn); }
+.verdict-banner h2 { margin:0 0 4px; font-size:17px; color:var(--warn); }
+.verdict-banner p { margin:0; }
+.toc { font-size:12.5px; color:var(--dim); margin:10px 0 4px; }
+.toc a { color:var(--dim); }
+.toc a:hover { color:var(--accent); }
+ul.tight { margin:6px 0; padding-left:20px; }
+ul.tight li { margin:3px 0; }
+.subcard { border-left:3px solid var(--border); padding-left:14px; margin:16px 0; }
+.subcard.clean { border-left-color:var(--ok); }
+.subcard.warn { border-left-color:var(--warn); }
+.subcard.go { border-left-color:var(--ok); }
+.status-line { font-size:12.5px; color:var(--dim); margin-top:-4px; margin-bottom:8px; }
+.tag { display:inline-block; font-size:10px; color:var(--dim); }
+.checklist { list-style:none; padding-left:0; margin:8px 0; }
+.checklist li { margin:5px 0; }
+.checklist li::before { content:"✓ "; color:var(--ok); font-weight:700; }
+footer.src-note { margin-top:32px; font-size:12px; color:var(--dim); }
+
+/* fix / re-verification status */
+.status { display:inline-block; font-size:10.5px; font-weight:700; text-transform:uppercase;
+  padding:1.5px 7px; border-radius:99px; white-space:nowrap; }
+.status.fixed { background:var(--ok-soft); color:var(--ok); }
+.status.residual.critical { background:var(--crit-soft); color:var(--crit); }
+.status.residual.warning  { background:var(--warn-soft); color:var(--warn); }
+.status.residual.info     { background:var(--info-soft); color:var(--info); }
+tr.fixed-row td:first-child { box-shadow: inset 3px 0 0 var(--ok); }
+tr.residual-row td:first-child { box-shadow: inset 3px 0 0 var(--border); }
+</style>
+
+<nav class="crumbs">
+  <a href="../dashboard.html">← Dashboard</a>
+  <a href="../implementation/spec.html">Spec</a>
+  <a href="../implementation/implementation-plan.html">Implementation Plan</a>
+  <a href="spec-audit.md" target="_blank" rel="noopener">Spec Audit</a>
+  <span class="here">Verification</span>
+  <a href="implementation-verification.md" target="_blank" rel="noopener" class="md">md twin ↗</a>
+</nav>
+
+<header>
+  <h1>Implementation Verification</h1>
+  <span class="badge">Recruiter-Scannable Profile README</span>
+  <span class="meta">Generated 2026-07-15 · <a href="implementation-verification.md" target="_blank" rel="noopener">md twin ↗</a></span>
+</header>
+
+<div class="verdict-banner pass-with-issues">
+  <h2>Verdict: Passed with Issues (post-fix)</h2>
+  <p>The implementation itself is clean: content is byte-for-byte identical to the approved spec (confirmed independently by 3 separate subagents via SHA-256/diff), zero placeholders remain, all links/badges are verified reachable, and the original problem is functionally resolved. Zero critical issues in the implementation. Both fixable warnings (LinkedIn URL inconsistency, stale standards-doc citations) have been fixed and manually re-checked. Two <strong>pre-existing repository-level risks</strong> remain — neither introduced by this task, both already known/deferred, but one (PII in a staged file) needs your direct attention.</p>
+</div>
+
+<div class="tiles">
+  <div class="tile warn"><b>Pass*</b><span>w/ issues (post-fix)</span></div>
+  <div class="tile ok"><b>2</b><span>issues fixed</span></div>
+  <div class="tile warn"><b>3</b><span>residual (pre-existing)</span></div>
+  <div class="tile crit"><b>1</b><span>critical (residual)</span></div>
+  <div class="tile ok"><b>5</b><span>reviews run</span></div>
+</div>
+
+<section class="tldr">
+  <div class="card">
+    <h2 style="margin-top:0">TL;DR</h2>
+    <p><strong>Overall status: Passed with Issues (post-fix).</strong> The implementation itself is clean: content is byte-for-byte identical to the approved spec (confirmed independently by 3 separate subagents via SHA-256/diff), zero placeholders remain, all links/badges verified reachable, and the original problem is functionally resolved. Zero critical issues in the implementation. Both fixable warnings (LinkedIn URL inconsistency, stale standards-doc citations) have been fixed and manually re-checked. Two <strong>pre-existing repository-level risks</strong> remain — neither introduced by this task, both already known/deferred, but one (PII in a staged file) needs your direct attention.</p>
+
+    <h2>Open Questions / Risks</h2>
+    <ul class="tight">
+      <li><span class="sev critical">Critical</span><strong>Repo-level, needs your attention</strong>: <code>.maister/tasks/product-design/2026-07-15-recruiter-scannable-profile/context/CV.md</code> is currently staged in git and contains your phone number, city, and email. This repo (<code>aib-projekt/.github</code>) is public. This file was already staged before this task started (per your own Phase 1 decision to leave it untouched) — this task did not create or worsen this exposure, but it's worth deciding deliberately whether that file should be committed as-is, gitignored, or removed from staging before any push.</li>
+      <li><span class="sev warning">Warning</span><strong>Repo-level, already deferred by you</strong>: local <code>draft</code> and <code>origin/draft</code> have diverged specifically over <code>profile/README.md</code> (origin has the original 12-line boilerplate from a commit not in your local history). This will surface as a merge conflict when you next sync branches — already flagged in Phase 1 and explicitly deferred to a separate manual step.</li>
+      <li><span class="sev warning">Minor</span>LinkedIn URL written inconsistently (with vs. without trailing slash) between the intro and closing blocks — both resolve fine, cosmetic only.</li>
+      <li><span class="sev info">Minor</span><code>.maister/docs/standards/profile/markdown-authoring.md</code> and <code>structure.md</code> now contain stale example quotes/line citations from the old content — informational, non-enforced, a natural follow-up via <code>/maister:standards-discover --scope=profile</code>.</li>
+    </ul>
+  </div>
+</section>
+
+<nav class="toc">
+  Contents:
+  <a href="#executive-summary">Executive Summary</a> ·
+  <a href="#plan-verification">Plan Verification</a> ·
+  <a href="#test-suite">Test Suite</a> ·
+  <a href="#standards-compliance">Standards Compliance</a> ·
+  <a href="#documentation">Documentation</a> ·
+  <a href="#optional-reviews">Optional Reviews</a> ·
+  <a href="#overall-assessment">Overall Assessment</a> ·
+  <a href="#issues">Issues Requiring Attention</a> ·
+  <a href="#recommendations">Recommendations</a> ·
+  <a href="#fix-history">Fix &amp; Re-Verification History</a> ·
+  <a href="#checklist">Verification Checklist</a>
+</nav>
+
+<main>
+  <h2 id="executive-summary">Executive Summary</h2>
+  <div class="card">
+    <p>Five verifications ran: implementation completeness, code review, pragmatic review, production readiness, and reality assessment. All five independently confirmed the written <code>profile/README.md</code> is character-for-character identical to the approved content, with zero placeholder text and all originally-identified problems resolved. No automated test suite exists for this docs-only repo; the implementation phase's own 7 manual verification checks (already passed) stand in for it.</p>
+  </div>
+
+  <h2 id="plan-verification">Implementation Plan Verification</h2>
+  <div class="card">
+    <ul class="tight">
+      <li><strong>Plan completion</strong>: 100% — all 4 steps (1.1–1.4) in Task Group 1 completed and independently spot-checked (not just checkbox-trusted).</li>
+      <li>Content overwrite, git re-staging, and the 7-check verification checklist were all executed as planned.</li>
+    </ul>
+  </div>
+
+  <h2 id="test-suite">Test Suite Results</h2>
+  <div class="card">
+    <p>No automated test suite exists for this repository (documentation-only, no build step, confirmed via <code>.maister/docs/project/tech-stack.md</code>). <code>skip_test_suite: true</code> — the 7 manual verification checks from the implementation phase (3 content-fidelity + 4 link/badge-reachability) already passed and are treated as the equivalent test evidence. Reality assessment independently re-ran the equivalent checks itself rather than trusting this claim, and confirmed the same results.</p>
+  </div>
+
+  <h2 id="standards-compliance">Standards Compliance</h2>
+  <div class="card">
+    <p><span class="pass">Compliant.</span> <code>global/minimal-implementation.md</code>, <code>global/conventions.md</code>, <code>profile/markdown-authoring.md</code>, and <code>profile/structure.md</code> all reasoned through (not just cited) and confirmed applied — centered divs, shields.io badges, the <strong>Demonstrates:</strong> callout, and per-project entry shape all verified present in the actual file content.</p>
+    <p><span class="sev warning">Gap</span><strong>Warning</strong>: <code>profile/markdown-authoring.md</code> and <code>profile/structure.md</code> contain stale example quotes/line citations pointing at content this task intentionally removed. Already flagged in spec-audit Finding M-2; correctly treated as out-of-scope for this task (a documentation-maintenance action, not a Core Requirement). Recommend a follow-up <code>/maister:standards-discover --scope=profile</code> run post-merge.</p>
+  </div>
+
+  <h2 id="documentation">Documentation Completeness</h2>
+  <div class="card">
+    <p><span class="pass">Adequate.</span> <code>work-log.md</code> has a complete Standards Reading Log, group-completion entry, and final Implementation-Complete entry. All 7 stated Success Criteria in <code>spec.md</code> individually re-checked against the live file and confirmed met (see Reality Assessment below for detail).</p>
+  </div>
+
+  <h2 id="optional-reviews">Optional Review Results</h2>
+
+  <div class="subcard clean">
+    <h3>Code Review</h3>
+    <div class="status-line"><span class="pass">Clean</span> — 0 critical, 1 warning, 3 info</div>
+    <ul class="tight">
+      <li>Content fidelity independently re-confirmed via diff against <code>spec.md</code>.</li>
+      <li><span class="sev warning">Warning</span>LinkedIn URL written two ways in the same file (no trailing slash at line 7, trailing slash at line 49) — both resolve correctly via LinkedIn's own normalization, but avoidable inconsistency in a "polished business card" page.</li>
+      <li>All 2 project repo links, the skill-flip live demo, and all 10 shields.io badge URLs verified live (HTTP 200). The calendar link (<code>cal.eu</code>) was independently confirmed to serve a genuine Cal.com-style booking page, resolving the earlier "unverified domain" concern.</li>
+      <li>Unicode integrity (em dashes, middots, all 4 emoji including variation selectors) verified correct — no mojibake.</li>
+      <li>Markdown/rendering structure sound: proper heading hierarchy, correctly blank-line-separated <code>&lt;div&gt;</code> blocks for GitHub's raw-HTML-in-Markdown parsing.</li>
+      <li><span class="sev info">Info</span>2 minor info notes (Gmail-logo badge for an iCloud address; alias-style email) — pre-existing, consistent with the source CV, out of scope to change.</li>
+    </ul>
+  </div>
+
+  <div class="subcard clean">
+    <h3>Pragmatic Review</h3>
+    <div class="status-line"><span class="pass">Appropriate</span> — no over-engineering</div>
+    <ul class="tight">
+      <li>The plan actively resisted unnecessary process: explicitly declined to split into multiple task groups, explicitly declined a Testing Review group, substituted a lightweight manual checklist rather than inventing a fake test suite.</li>
+      <li>Independently re-verified zero scope creep: diff confirms exact spec match, git status confirms only the intended file was newly staged.</li>
+      <li><span class="sev info">Info</span>One informational, non-blocking note: the surrounding task-tracking artifacts (analysis docs, dashboards, HTML companions) are large relative to a 51-line content change — but this stems from the project's own <code>/maister:*</code> workflow policy in <code>CLAUDE.md</code>, not a choice made within the implementation itself.</li>
+    </ul>
+  </div>
+
+  <div class="subcard warn">
+    <h3>Production Readiness</h3>
+    <div class="status-line"><span style="color:var(--warn); font-weight:600;">GO WITH MITIGATIONS</span> — 75%</div>
+    <ul class="tight">
+      <li>Traditional production-readiness dimensions (config management, monitoring, error handling/resilience, performance/scaling) correctly assessed as <strong>not applicable</strong> — static Markdown file, no runtime, no deployment pipeline.</li>
+      <li><span class="sev warning">B-1</span>Confirmed the known <code>draft</code>/<code>origin/draft</code> divergence over this exact file via direct git history inspection — will produce a same-file merge conflict when synced. Already flagged and deferred; not introduced by this task.</li>
+      <li><span class="sev critical">B-2 (new observation)</span><code>context/CV.md</code> (under the product-design task directory, already staged before this task began) contains unredacted personal contact details in a repo that will be public. Flagged for your direct attention — see Open Questions above.</li>
+      <li>Content itself verified clean: matches working tree exactly, no secrets in the file this task modified, no leftover placeholders.</li>
+    </ul>
+  </div>
+
+  <div class="subcard go">
+    <h3>Reality Assessment</h3>
+    <div class="status-line"><span class="pass">GO</span> — functionally real</div>
+    <ul class="tight">
+      <li>Independently re-extracted and re-hashed the approved content and diffed against the live file: clean, byte-identical (third independent confirmation of the same fact, after spec-audit and completeness-checker).</li>
+      <li>Confirmed each originally-identified problem is actually resolved in the live file (not just claimed): seniority headline present, 3-badge bookend (was 2), "About this org" heading absent, tech-stack repositioned with 7 badges (was 5 near the bottom), zero placeholder text.</li>
+      <li><span class="sev info">Info</span>LinkedIn returned HTTP 999 to an automated request — this is LinkedIn's known anti-bot response, not evidence of a broken link; flagged as inconclusive-by-automation, recommend a manual click to fully close this out.</li>
+      <li>Confirmed <code>CV.md</code>/<code>assumptions.md</code> relocation predates this task's timestamps — an artifact of the upstream product-design workflow, not something this development task did.</li>
+    </ul>
+  </div>
+
+  <h2 id="overall-assessment">Overall Assessment</h2>
+  <div class="card">
+    <table>
+      <thead><tr><th>Dimension</th><th>Result</th></tr></thead>
+      <tbody>
+        <tr><td>Plan completion</td><td>100% (4/4 steps)</td></tr>
+        <tr><td>Test suite</td><td>N/A — no automated suite; 7/7 manual checks passed (verified independently by 3 subagents)</td></tr>
+        <tr><td>Standards compliance</td><td>Compliant (1 warning: stale standards-doc citations, pre-existing/known)</td></tr>
+        <tr><td>Documentation</td><td>Adequate</td></tr>
+        <tr><td>Code review</td><td>Clean (1 minor warning: LinkedIn URL inconsistency)</td></tr>
+        <tr><td>Pragmatic review</td><td>Appropriate, no over-engineering</td></tr>
+        <tr><td>Production readiness</td><td>GO with mitigations (2 pre-existing, out-of-scope repo risks)</td></tr>
+        <tr><td>Reality check</td><td>GO — functionally real</td></tr>
+      </tbody>
+    </table>
+    <p style="margin-top:14px;"><strong>Overall verdict: Passed with Issues.</strong> Zero critical issues were introduced by this task's implementation. The two blockers surfaced by production-readiness review are pre-existing repository conditions this task correctly did not touch (per your own Phase 1 scope decision) — but one of them (PII exposure) is a genuine, separate concern worth your direct decision before any push.</p>
+  </div>
+
+  <h2 id="issues">Issues Requiring Attention</h2>
+  <div class="card">
+    <table>
+      <thead><tr><th>#</th><th>Severity</th><th>Source</th><th>Description</th><th>Fixable by this task?</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr class="residual-row">
+          <td>1</td>
+          <td><span class="sev critical">Critical</span><br><span class="tag">repo-level, out of scope</span></td>
+          <td>Production readiness</td>
+          <td><code>context/CV.md</code> staged with unredacted PII in a public repo</td>
+          <td>No — your decision, not this task's to make</td>
+          <td><span class="status residual critical">Residual</span></td>
+        </tr>
+        <tr class="residual-row">
+          <td>2</td>
+          <td><span class="sev warning">Warning</span><br><span class="tag">repo-level, out of scope</span></td>
+          <td>Production readiness</td>
+          <td><code>draft</code>/<code>origin/draft</code> diverged over this file — future merge conflict</td>
+          <td>No — already deferred by you</td>
+          <td><span class="status residual warning">Residual</span></td>
+        </tr>
+        <tr class="fixed-row">
+          <td>3</td>
+          <td><span class="sev warning">Warning</span></td>
+          <td>Completeness / Standards</td>
+          <td><code>profile/markdown-authoring.md</code>, <code>structure.md</code> have stale citations post-overwrite</td>
+          <td>Yes</td>
+          <td><span class="status fixed">✓ Fixed</span></td>
+        </tr>
+        <tr class="fixed-row">
+          <td>4</td>
+          <td><span class="sev warning">Warning</span></td>
+          <td>Code review</td>
+          <td>LinkedIn URL trailing-slash inconsistency (line 7 vs. 49)</td>
+          <td>Yes</td>
+          <td><span class="status fixed">✓ Fixed</span></td>
+        </tr>
+        <tr class="residual-row">
+          <td>5</td>
+          <td><span class="sev info">Info</span></td>
+          <td>Reality check</td>
+          <td>LinkedIn link returned HTTP 999 to automated check (anti-bot, not a defect)</td>
+          <td>N/A — recommend manual click to confirm</td>
+          <td><span class="status residual info">Residual</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 id="recommendations">Recommendations</h2>
+  <div class="card">
+    <ol class="tight">
+      <li><strong>Decide on <code>CV.md</code>'s PII exposure before any push</strong> — this is the one item that genuinely needs your judgment call, not a workflow fix.</li>
+      <li>Optionally fix the LinkedIn URL trailing-slash inconsistency (trivial, in scope for this task if you'd like it applied now).</li>
+      <li>Run <code>/maister:standards-discover --scope=profile</code> after merging to refresh the two stale standards docs.</li>
+      <li>Resolve the <code>draft</code>/<code>origin/draft</code> divergence as your own separate manual step before pushing.</li>
+      <li>Manually click the LinkedIn link once to fully close out the one automation-inconclusive check.</li>
+    </ol>
+  </div>
+
+  <h2 id="fix-history">Fix &amp; Re-Verification History</h2>
+  <div class="card">
+    <p>User chose to fix the 2 in-scope warnings and leave the 2 repo-level items and the 1 info item as-is (per the fix-loop decision). Given the triviality and low risk of the two fixes, a full 5-subagent re-verification was skipped in favor of a direct manual re-check by the orchestrator.</p>
+    <table>
+      <thead><tr><th>#</th><th>Issue</th><th>Fix Applied</th><th>Re-check Outcome</th></tr></thead>
+      <tbody>
+        <tr class="fixed-row">
+          <td>3</td>
+          <td>Stale citations in <code>profile/markdown-authoring.md</code> / <code>structure.md</code></td>
+          <td>Updated line numbers (1-11/47-51) in the div-block citation; retired the "Inline Placeholders" entry with a dated status note explaining it's superseded; updated the stale "Demonstrates" quote and per-project example to match the new punchy-lead content</td>
+          <td><span class="status fixed">✓ Resolved</span> — <code>grep</code> for the old stale strings ("fill in", old "reactive programming..." quote) in both files returns zero matches</td>
+        </tr>
+        <tr class="fixed-row">
+          <td>4</td>
+          <td>LinkedIn URL trailing-slash inconsistency (line 7 vs. 49)</td>
+          <td>Removed the trailing slash from line 49 to match line 7</td>
+          <td><span class="status fixed">✓ Resolved</span> — <code>grep -n "linkedin.com/in/bartekmarciniak"</code> confirms both occurrences now read identically (no trailing slash)</td>
+        </tr>
+        <tr class="residual-row">
+          <td>1</td>
+          <td><code>context/CV.md</code> staged with PII in a public repo</td>
+          <td>Not fixed — repo-level, outside this task's file scope, requires your own decision</td>
+          <td><span class="status residual critical">Residual</span> — unchanged, flagged for your attention</td>
+        </tr>
+        <tr class="residual-row">
+          <td>2</td>
+          <td><code>draft</code>/<code>origin/draft</code> divergence over <code>profile/README.md</code></td>
+          <td>Not fixed — already explicitly deferred by you in Phase 1</td>
+          <td><span class="status residual warning">Residual</span> — unchanged, deferred as planned</td>
+        </tr>
+        <tr class="residual-row">
+          <td>5</td>
+          <td>LinkedIn HTTP 999 (anti-bot) on automated check</td>
+          <td>Not applicable — recommend a manual click</td>
+          <td><span class="status residual info">Residual</span> — informational only</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 id="checklist">Verification Checklist</h2>
+  <div class="card">
+    <ul class="checklist">
+      <li>Implementation plan 100% complete, spot-checked against actual artifacts</li>
+      <li>Standards compliance verified with active reasoning (not citation-matching)</li>
+      <li>Documentation (work-log, spec success criteria) complete and cross-checked</li>
+      <li>Code review: clean, 0 critical</li>
+      <li>Pragmatic review: no over-engineering</li>
+      <li>Production readiness: assessed, 2 pre-existing repo-level risks surfaced (not task defects)</li>
+      <li>Reality check: functionally confirmed via independent re-verification, not trusted claims</li>
+    </ul>
+  </div>
+
+  <footer class="src-note">Restructured from <a href="implementation-verification.md" target="_blank" rel="noopener">implementation-verification.md</a> — same content, visualized. No findings added or removed.</footer>
+</main>

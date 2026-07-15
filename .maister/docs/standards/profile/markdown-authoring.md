@@ -7,7 +7,7 @@ Intro and closing/contact sections use centered `<div align="center">` HTML bloc
 
 Confidence: 30/100 (single-source, low sample size — informational, not enforced).
 
-Source: `profile/README.md` (opening block, lines 1-10; closing contact block, lines 46-50); also documented in `project/tech-stack.md`.
+Source: `profile/README.md` (opening block, lines 1-11; closing contact block, lines 47-51); also documented in `project/tech-stack.md`.
 
 Example:
 ```
@@ -18,19 +18,10 @@ Example:
 </div>
 ```
 
-### Inline Placeholders for Incomplete Content
-Incomplete sections are marked with inline HTML comments or bracketed placeholder text as authoring notes, rather than left silently blank or filled with guessed content.
+### Inline Placeholders for Incomplete Content — Retired
+**Status (2026-07-15): retired.** This pattern was observed when `profile/README.md` still had an unfinished `skill-flip` entry. That entry was completed with real content (including a live-demo link) during the recruiter-scannable redesign, so no placeholder text remains anywhere in the file — the observed pattern no longer applies. Keeping this entry as a historical note: if a future project entry is added before it's fully ready, placeholder text or an HTML comment note remains a reasonable stopgap, but zero-placeholder-text is now the page's actual success criterion (see `project/vision.md`), not this pattern.
 
-Confidence: 30/100 (informational).
-
-Source: `profile/README.md`, e.g. `*[fill in — e.g. front-end fundamentals, state handling, UX for spaced repetition]*` and `<!-- Optional: add a live demo link here if skill-flip is hosted -->`.
-
-Example:
-```
-**Demonstrates:** *[fill in — e.g. front-end fundamentals, state handling, UX for spaced repetition]*
-
-<!-- Optional: add a live demo link here if skill-flip is hosted -->
-```
+Confidence: 30/100 (informational, now superseded).
 
 ### Shields.io Badges for Contact and Tech Stack
 Contact links and tech-stack summaries are rendered as shields.io badge images rather than plain text/links.
